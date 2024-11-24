@@ -1,20 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import "react-native-gesture-handler";
+import { StyleSheet, View, Button } from "react-native";
+// import { NavigationContainer } from "@react-navigation/native";
+// import { createStackNavigator } from "@react-navigation/stack";
+import Header from "./components/Header";
+import Login from "./components/Login";
+// import EventList from "./components/EventList";
+// import EventDetails from "./components/EventDetails";
+// import EventFormWrapper from "./components/EventFormWrapper";
+import { AuthProvider } from "./context/AuthContext";
 
-export default function App() {
+// const Stack = createStackNavigator();
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AuthProvider>
+      {/* <NavigationContainer> */}
+      <View style={styles.container}>
+        <Header />
+        <Login />
+        {/* <Button
+            title="Crear Evento"
+            onPress={() => navigation.navigate("CreateEvent")}
+          />
+          <Stack.Navigator initialRouteName="EventList">
+            <Stack.Screen name="EventList" component={EventList} />
+            <Stack.Screen name="EventDetails" component={EventDetails} />
+            <Stack.Screen name="CreateEvent">
+              {(props) => <EventFormWrapper {...props} isEdit={false} />}
+            </Stack.Screen>
+            <Stack.Screen name="EditEvent">
+              {(props) => <EventFormWrapper {...props} isEdit={true} />}
+            </Stack.Screen>
+          </Stack.Navigator> */}
+      </View>
+      {/* </NavigationContainer> */}
+    </AuthProvider>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });
+
+export default App;

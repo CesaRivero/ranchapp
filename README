@@ -1,0 +1,4 @@
+##Falta solo aplicar lo del video para empezar la autenticacion, context y services estan. solo falta agregar datos de console.
+No se pudo probar, comentado componentes en app.js para solo cargar el header y el login. no esta trayenddo la data del user por mas que si ejecuta bien la peticion. subo repo para validar.
+
+para ejecutar hay que usar el eas prebuild y luego npx expo run:android

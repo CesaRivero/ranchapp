@@ -13,16 +13,31 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cesarivero.ranchapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.cesarivero.ranchapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.36174827018-mksd8fdssqv7u66k5tunsugies15sol2"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e7e06d45-686e-45e4-9fa2-940e6d373da7"
+      }
     }
   }
 }
