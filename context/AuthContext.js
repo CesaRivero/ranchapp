@@ -43,8 +43,8 @@ function AuthProvider({ children }) {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      setUser(userInfo.user);
-      console.log("userinfo: en funcion singin ", userInfo);
+      setUser(userInfo.data.user);
+      console.log("userinfo: en funcion singin ", userInfo.data.user);
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Error signing in with Google:", error);

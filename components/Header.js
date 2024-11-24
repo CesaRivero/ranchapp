@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#1b1b1b",
   },
   logo: {
     width: 250,

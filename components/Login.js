@@ -5,13 +5,20 @@ import { AuthContext } from "../context/AuthContext";
 function Login() {
   const { isAuthenticated, user, signIn, signOut } = useContext(AuthContext);
 
+  if (isAuthenticated && user) {
+    console.log(
+      "user dentro de login cuando isAuthenticated y user son true:",
+      user
+    );
+  }
+
   return (
     <View style={styles.container}>
       {isAuthenticated && user ? (
         <View style={styles.userInfo}>
-          <Text>Bienvenido, {user.name}</Text>
+          <Text>Bienvenido, {user.givenName}</Text>
           <Text>Email: {user.email}</Text>
-          <Image source={{ uri: user.imageUrl }} style={styles.profileImage} />
+          <Image source={{ uri: user.photo }} style={styles.profileImage} />
           <Button title="Cerrar Sesión" onPress={signOut} />
         </View>
       ) : (
