@@ -6,6 +6,9 @@ const defaultConfig = getDefaultConfig(__dirname);
 module.exports = {
   ...defaultConfig,
   resolver: {
-    blockList: defaultConfig.resolver.blockList,
+    ...defaultConfig.resolver,
+    extraNodeModules: {
+      "nanoid/non-secure": require.resolve("nanoid/non-secure/index.cjs"),
+    },
   },
 };

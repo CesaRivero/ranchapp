@@ -1,4 +1,3 @@
-##Falta solo aplicar lo del video para empezar la autenticacion, context y services estan. solo falta agregar datos de console.
-No se pudo probar, comentado componentes en app.js para solo cargar el header y el login. no esta trayenddo la data del user por mas que si ejecuta bien la peticion. subo repo para validar.
+comentado componentes en app.js para solo cargar el header y el login.Trae y muesta la info basica del user. El problema es en la interaccion de los componentes y la navegacion. se instaaron algunas dependencias quedamos en las mismas, a validar como interactar y pq rompre con el nanoid.
 
 para ejecutar hay que usar el eas prebuild y luego npx expo run:android
