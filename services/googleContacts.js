@@ -22,8 +22,8 @@ const useAccessToken = () => {
 };
 
 // Listar contactos
-export async function listContacts() {
-  const accessToken = useAccessToken();
+export async function listContacts(accessToken) {
+  // const accessToken = useAccessToken();
 
   if (!accessToken) {
     throw new Error("No access token available");
@@ -58,8 +58,8 @@ export async function listContacts() {
 }
 
 // Obtener detalles de un contacto por su ID
-export async function getContactDetails(contactId) {
-  const accessToken = useAccessToken();
+export async function getContactDetails(contactId, accessToken) {
+  // const accessToken = useAccessToken();
 
   if (!accessToken) {
     throw new Error("No access token available");

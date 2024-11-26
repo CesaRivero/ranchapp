@@ -7,8 +7,6 @@ module.exports = {
   ...defaultConfig,
   resolver: {
     ...defaultConfig.resolver,
-    extraNodeModules: {
-      "nanoid/non-secure": require.resolve("nanoid/non-secure/index.cjs"),
-    },
+    extraNodeModules: {},
   },
 };

@@ -43,10 +43,13 @@ const EventForm = ({ onSubmit }) => {
     if (isAuthenticated) {
       async function fetchContacts() {
         try {
-          const contacts = await listContacts();
+          const contacts = await listContacts(accessToken);
           setContacts(contacts);
         } catch (error) {
-          console.error("Error al obtener los contactos:", error);
+          console.error(
+            "Error al obtener los contactos: dentro de useefect de eventform",
+            error
+          );
         }
       }
       fetchContacts();
@@ -57,7 +60,8 @@ const EventForm = ({ onSubmit }) => {
     if (id) {
       async function fetchEvent() {
         try {
-          const event = await getEventDetails(id);
+          const accessToken = await getAccessToken();
+          const event = await getEventDetails(id, accessToken);
           setTitle(event.summary);
           setDescription(event.description);
           setStartDate(formatDateTimeLocal(event.start.dateTime));

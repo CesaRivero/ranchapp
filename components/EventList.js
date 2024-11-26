@@ -14,6 +14,7 @@ function EventList() {
       async function fetchEvents() {
         const result = await listUpcomingEvents();
         setEvents(result);
+        console.log("Eventos:", result);
       }
       fetchEvents();
     }
@@ -25,17 +26,23 @@ function EventList() {
 
   return (
     <View style={styles.container}>
-      {events.map((event) => (
-        <TouchableOpacity
-          key={event.id}
-          style={styles.eventCard}
-          onPress={() => navigation.navigate("EventDetails", { id: event.id })}
-        >
-          <Text style={styles.eventTitle}>{event.summary}</Text>
-          <Text>{event.start.dateTime}</Text>
-          <Text>{event.location}</Text>
-        </TouchableOpacity>
-      ))}
+      {events.length === 0 ? (
+        <Text>No hay eventos disponibles.</Text>
+      ) : (
+        events.map((event) => (
+          <TouchableOpacity
+            key={event.id}
+            style={styles.eventCard}
+            onPress={() =>
+              navigation.navigate("EventDetails", { id: event.id })
+            }
+          >
+            <Text style={styles.eventTitle}>{event.summary}</Text>
+            <Text>{event.start.dateTime}</Text>
+            <Text>{event.location}</Text>
+          </TouchableOpacity>
+        ))
+      )}
     </View>
   );
 }

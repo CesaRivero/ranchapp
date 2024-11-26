@@ -16,8 +16,8 @@ function Login() {
     <View style={styles.container}>
       {isAuthenticated && user ? (
         <View style={styles.userInfo}>
-          <Text>Bienvenido, {user.givenName}</Text>
-          <Text>Email: {user.email}</Text>
+          <Text style={styles.userInfoText}>Bienvenido, {user.givenName}</Text>
+          <Text style={styles.userInfoText}>Email: {user.email}</Text>
           <Image source={{ uri: user.photo }} style={styles.profileImage} />
           <Button title="Cerrar Sesión" onPress={signOut} />
         </View>
@@ -30,19 +30,25 @@ function Login() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
+    // flex: 1,
     alignItems: "center",
-    padding: 16,
+    padding: 10,
+    backgroundColor: "#f8f8f8", //cambiar color al necesario luego
   },
   userInfo: {
     alignItems: "center",
+  },
+  userInfoText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#0000FF",
   },
   profileImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
     marginVertical: 8,
+    resizeMode: "contain",
   },
 });
 

@@ -26,8 +26,24 @@ function AuthProvider({ children }) {
     const checkIfSignedIn = async () => {
       try {
         const userInfo = await GoogleSignin.signInSilently();
-        setUser(userInfo.user);
-        setIsAuthenticated(true);
+        if (userInfo && userInfo.user) {
+          setUser(userInfo.user);
+          setIsAuthenticated(true);
+          console.log(
+            "isAuthenticated en funcion checkIFsingin: dentro del try y dentro del if",
+            isAuthenticated
+          );
+          console.log(
+            "userinfo: en funcion checkIFsingin dentro del if ",
+            userInfo.user
+          );
+        } else {
+          setIsAuthenticated(false);
+          console.log(
+            "isAuthenticated en else del userinfo: ",
+            isAuthenticated
+          );
+        }
       } catch (error) {
         if (error.code !== statusCodes.SIGN_IN_REQUIRED) {
           console.error("Error checking sign-in status:", error);
@@ -45,6 +61,7 @@ function AuthProvider({ children }) {
       const userInfo = await GoogleSignin.signIn();
       setUser(userInfo.data.user);
       console.log("userinfo: en funcion singin ", userInfo.data.user);
+      console.log("isAuthenticated en funcion singin: ", isAuthenticated);
       setIsAuthenticated(true);
     } catch (error) {
       console.error("Error signing in with Google:", error);
