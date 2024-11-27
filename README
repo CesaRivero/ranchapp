@@ -1,3 +1,2 @@
-comentado componentes en app.js para solo cargar el header y el login.Trae y muesta la info basica del user. El problema es en la interaccion de los componentes y la navegacion. se instaaron algunas dependencias quedamos en las mismas, a validar como interactar y pq rompre con el nanoid.
-
+Funcionalidades esta, faltaria validar y css
 para ejecutar hay que usar el eas prebuild y luego npx expo run:android
