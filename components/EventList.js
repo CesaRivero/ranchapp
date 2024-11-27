@@ -5,16 +5,21 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 
 function EventList() {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, getAccessToken } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const navigation = useNavigation();
 
   useEffect(() => {
     if (isAuthenticated) {
       async function fetchEvents() {
-        const result = await listUpcomingEvents();
-        setEvents(result);
-        console.log("Eventos:", result);
+        try {
+          const accessToken = await getAccessToken();
+          const result = await listUpcomingEvents(accessToken);
+          setEvents(result);
+          console.log("Eventos:", result);
+        } catch (error) {
+          console.error("Error al listar eventos:", error);
+        }
       }
       fetchEvents();
     }
@@ -27,7 +32,7 @@ function EventList() {
   return (
     <View style={styles.container}>
       {events.length === 0 ? (
-        <Text>No hay eventos disponibles.</Text>
+        <Text style={styles.errorText}>No hay eventos disponibles.</Text>
       ) : (
         events.map((event) => (
           <TouchableOpacity
@@ -51,11 +56,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#1b1b1b",
   },
   eventCard: {
     padding: 16,
     marginVertical: 8,
-    backgroundColor: "#fff",
+    backgroundColor: "#3498db",
     borderRadius: 8,
     shadowColor: "#000",
     shadowOpacity: 0.1,
@@ -65,6 +71,10 @@ const styles = StyleSheet.create({
   eventTitle: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+  errorText: {
+    fontSize: 30,
+    color: "red",
   },
 });
 

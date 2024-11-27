@@ -1,30 +1,28 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-const useAccessToken = () => {
-  const [accessToken, setAccessToken] = useState(null);
-  const { getAccessToken } = useContext(AuthContext);
+// const useAccessToken = () => {
+//   const [accessToken, setAccessToken] = useState(null);
+//   const { getAccessToken } = useContext(AuthContext);
 
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      try {
-        const token = await getAccessToken();
-        setAccessToken(token);
-      } catch (error) {
-        console.error("Error getting access token:", error);
-      }
-    };
+//   useEffect(() => {
+//     const fetchAccessToken = async () => {
+//       try {
+//         const token = await getAccessToken();
+//         setAccessToken(token);
+//       } catch (error) {
+//         console.error("Error getting access token:", error);
+//       }
+//     };
 
-    fetchAccessToken();
-  }, [getAccessToken]);
+//     fetchAccessToken();
+//   }, [getAccessToken]);
 
-  return accessToken;
-};
+//   return accessToken;
+// };
 
 // Listar eventos próximos
-export async function listUpcomingEvents() {
-  const accessToken = useAccessToken();
-
+export async function listUpcomingEvents(accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
   }
@@ -52,12 +50,11 @@ export async function listUpcomingEvents() {
 }
 
 // Crear un nuevo evento
-export async function createEvent(event) {
-  const accessToken = useAccessToken();
-
+export async function createEvent(event, accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
   }
+  console.log("Creating event with access token:", accessToken); // Agregar log para depuración
 
   try {
     const response = await axios.post(
@@ -71,15 +68,13 @@ export async function createEvent(event) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error al crear el evento:", error);
+    console.error("Error al crear el evento dentro de googlecalendar:", error);
     throw error;
   }
 }
 
 // Actualizar un evento existente
-export async function updateEvent(eventId, updatedEvent) {
-  const accessToken = useAccessToken();
-
+export async function updateEvent(eventId, updatedEvent, accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
   }
@@ -102,9 +97,7 @@ export async function updateEvent(eventId, updatedEvent) {
 }
 
 // Eliminar un evento
-export async function deleteEvent(eventId) {
-  const accessToken = useAccessToken();
-
+export async function deleteEvent(eventId, accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
   }
@@ -126,9 +119,7 @@ export async function deleteEvent(eventId) {
 }
 
 // Obtener los detalles de un evento
-export async function getEventDetails(eventId) {
-  const accessToken = useAccessToken();
-
+export async function getEventDetails(eventId, accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
   }

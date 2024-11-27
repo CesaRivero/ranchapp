@@ -8,26 +8,30 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { listContacts } from "../services/googleContacts";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getEventDetails } from "../services/googleCalendar";
 
 const EventForm = ({ onSubmit }) => {
-  const { isAuthenticated } = useContext(AuthContext);
-  const navigation = useNavigation();
+  const { isAuthenticated, getAccessToken } = useContext(AuthContext);
   const route = useRoute();
-  const { id } = route.params || {};
+  const { event } = route.params || {};
+  const id = event?.id;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [participants, setParticipants] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [location, setLocation] = useState("");
   const [amount, setAmount] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [value, setValue] = useState("");
+  const [isStartDatePickerVisible, setStartDatePickerVisibility] =
+    useState(false);
+  const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
 
   const formatDateTimeLocal = (dateTime) => {
     const date = new Date(dateTime);
@@ -40,42 +44,61 @@ const EventForm = ({ onSubmit }) => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      async function fetchContacts() {
-        try {
-          const contacts = await listContacts(accessToken);
-          setContacts(contacts);
-        } catch (error) {
-          console.error(
-            "Error al obtener los contactos: dentro de useefect de eventform",
-            error
-          );
+    let isMounted = true;
+    const fetchAccessToken = async () => {
+      try {
+        const accessToken = await getAccessToken();
+        if (isMounted) {
+          return accessToken;
         }
+      } catch (error) {
+        console.error("Error getting access token:", error);
       }
-      fetchContacts();
-    }
-  }, [isAuthenticated]);
+    };
 
-  useEffect(() => {
-    if (id) {
-      async function fetchEvent() {
-        try {
-          const accessToken = await getAccessToken();
-          const event = await getEventDetails(id, accessToken);
-          setTitle(event.summary);
-          setDescription(event.description);
-          setStartDate(formatDateTimeLocal(event.start.dateTime));
-          setEndDate(formatDateTimeLocal(event.end.dateTime));
-          setParticipants(event.attendees.map((att) => att.email));
-          setLocation(event.location);
-          setAmount(event.extendedProperties.shared.numericValue);
-        } catch (error) {
-          console.error("Error al obtener los detalles del evento:", error);
-        }
+    const fetchContacts = async (accessToken) => {
+      try {
+        const contacts = await listContacts(accessToken);
+        setContacts(contacts);
+      } catch (error) {
+        console.error(
+          "Error al obtener los contactos: dentro de useefect de eventform",
+          error
+        );
       }
-      fetchEvent();
+    };
+
+    const fetchEvent = async (accessToken) => {
+      console.log("id dentro de fetchEvent en eventform:", id);
+      try {
+        const event = await getEventDetails(id, accessToken);
+        setTitle(event.summary);
+        setDescription(event.description);
+        setStartDate(new Date(event.start.dateTime));
+        setEndDate(new Date(event.end.dateTime));
+        setParticipants(event.attendees.map((att) => att.email));
+        setLocation(event.location);
+        setAmount(event.extendedProperties.shared.numericValue);
+      } catch (error) {
+        console.error("Error al obtener los detalles del evento:", error);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchAccessToken().then((accessToken) => {
+        if (accessToken) {
+          fetchContacts(accessToken);
+          if (id) {
+            fetchEvent(accessToken);
+          }
+        }
+      });
     }
-  }, [id]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAuthenticated, id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,11 +112,11 @@ const EventForm = ({ onSubmit }) => {
       description,
       location: location,
       start: {
-        dateTime: new Date(startDate).toISOString(),
+        dateTime: startDate.toISOString(),
         timeZone: "America/Argentina/Buenos_Aires",
       },
       end: {
-        dateTime: new Date(endDate).toISOString(),
+        dateTime: endDate.toISOString(),
         timeZone: "America/Argentina/Buenos_Aires",
       },
       attendees: participants.map((email) => ({ email })),
@@ -103,8 +126,16 @@ const EventForm = ({ onSubmit }) => {
         },
       },
     };
+    console.log("handleSubmit called with event dentro de eventform:", event); // Agregar log para depuración
 
-    await onSubmit(event);
+    try {
+      await onSubmit(event);
+    } catch (error) {
+      console.error(
+        "Error al crear el evento: dentro de try de onsumit en eventform",
+        error
+      );
+    }
   };
 
   const handleAddParticipant = () => {
@@ -151,52 +182,108 @@ const EventForm = ({ onSubmit }) => {
     onSuggestionsClearRequested();
   };
 
+  const showStartDatePicker = () => {
+    setStartDatePickerVisibility(true);
+  };
+
+  const hideStartDatePicker = () => {
+    setStartDatePickerVisibility(false);
+  };
+
+  const handleStartDateConfirm = (date) => {
+    setStartDate(date);
+    hideStartDatePicker();
+  };
+
+  const showEndDatePicker = () => {
+    setEndDatePickerVisibility(true);
+  };
+
+  const hideEndDatePicker = () => {
+    setEndDatePickerVisibility(false);
+  };
+
+  const handleEndDateConfirm = (date) => {
+    setEndDate(date);
+    hideEndDatePicker();
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Título:</Text>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        required
-      />
-      <Text>Descripción:</Text>
-      <TextInput
-        style={styles.input}
-        value={description}
-        onChangeText={setDescription}
-      />
-      <Text>Ubicación:</Text>
-      <TextInput
-        style={styles.input}
-        value={location}
-        onChangeText={setLocation}
-      />
-      <Text>Fecha y hora de inicio:</Text>
-      <TextInput
-        style={styles.input}
-        value={startDate}
-        onChangeText={setStartDate}
-        required
-      />
-      <Text>Fecha y hora de fin:</Text>
-      <TextInput
-        style={styles.input}
-        value={endDate}
-        onChangeText={setEndDate}
-        required
-      />
-      <Text>Gasto:</Text>
-      <TextInput style={styles.input} value={amount} onChangeText={setAmount} />
-      <Text>Participantes:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Añadir participante"
-        value={value}
-        onChangeText={onChange}
-        onBlur={handleAddParticipant}
-      />
       <FlatList
+        ListHeaderComponent={
+          <>
+            <Text style={{ color: "white" }}>Título:</Text>
+            <TextInput
+              style={styles.input}
+              value={title}
+              onChangeText={setTitle}
+              required
+            />
+            <Text style={{ color: "white" }}>Descripción:</Text>
+            <TextInput
+              style={styles.input}
+              value={description}
+              onChangeText={setDescription}
+            />
+            <Text style={{ color: "white" }}>Ubicación:</Text>
+            <TextInput
+              style={styles.input}
+              value={location}
+              onChangeText={setLocation}
+            />
+            <Text style={{ color: "white" }}>Fecha y hora de inicio:</Text>
+            <View style={styles.dateTimePicker}>
+              <Button
+                title="Seleccionar fecha y hora"
+                onPress={showStartDatePicker}
+              />
+              <TextInput
+                style={styles.input}
+                value={formatDateTimeLocal(startDate)}
+                editable={false}
+              />
+              <DateTimePickerModal
+                isVisible={isStartDatePickerVisible}
+                mode="datetime"
+                onConfirm={handleStartDateConfirm}
+                onCancel={hideStartDatePicker}
+              />
+            </View>
+            <Text style={{ color: "white" }}>Fecha y hora de fin:</Text>
+            <View style={styles.dateTimePicker}>
+              <Button
+                title="Seleccionar fecha y hora"
+                onPress={showEndDatePicker}
+              />
+              <TextInput
+                style={styles.input}
+                value={formatDateTimeLocal(endDate)}
+                editable={false}
+              />
+              <DateTimePickerModal
+                isVisible={isEndDatePickerVisible}
+                mode="datetime"
+                onConfirm={handleEndDateConfirm}
+                onCancel={hideEndDatePicker}
+              />
+            </View>
+            <Text style={{ color: "white" }}>Gasto:</Text>
+            <TextInput
+              style={styles.input}
+              value={amount}
+              onChangeText={setAmount}
+            />
+            <Text style={{ color: "white" }}>Participantes:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Añadir participante"
+              value={value}
+              onChangeText={onChange}
+              onBlur={handleAddParticipant}
+            />
+          </>
+        }
         data={suggestions}
         keyExtractor={(item) => item.email}
         renderItem={({ item }) => (
@@ -206,22 +293,25 @@ const EventForm = ({ onSubmit }) => {
             </Text>
           </TouchableOpacity>
         )}
-      />
-      <FlatList
-        data={participants}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <View style={styles.participant}>
-            <Text>{item}</Text>
-            <Button
-              title="Eliminar"
-              onPress={() => handleRemoveParticipant(item)}
+        ListFooterComponent={
+          <>
+            <FlatList
+              data={participants}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <View style={styles.participant}>
+                  <Text>{item}</Text>
+                  <Button
+                    title="Eliminar"
+                    onPress={() => handleRemoveParticipant(item)}
+                  />
+                </View>
+              )}
             />
-          </View>
-        )}
+            <Button title="Guardar" onPress={handleSubmit} />
+          </>
+        }
       />
-      <Button title="Guardar" onPress={handleSubmit} />
-      <Button title="Volver" onPress={() => navigation.goBack()} />
     </View>
   );
 };
@@ -230,6 +320,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#1b1b1b",
   },
   input: {
     width: "100%",
@@ -238,6 +329,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 4,
+    color: "white",
+  },
+  dateTimePicker: {
+    marginVertical: 8,
   },
   participant: {
     flexDirection: "row",

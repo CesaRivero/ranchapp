@@ -4,7 +4,7 @@ import { StyleSheet, View, Pressable, Text, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Header from "./Header";
-import Login from "./Login";
+import MainScreen from "./MainScreen";
 import EventList from "./EventList";
 import EventDetails from "./EventDetails";
 import EventFormWrapper from "./EventFormWrapper";
@@ -16,7 +16,6 @@ const Stack = createStackNavigator();
 
 const MainContent = () => {
   const { isAuthenticated } = useContext(AuthContext);
-  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -35,32 +34,36 @@ const MainContent = () => {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
-      <ScrollView>
-        <StatusBar style="light" />
-        <Header />
+      {/* <ScrollView> */}
+      <StatusBar style="light" />
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#3498db", // Fondo del encabezado
+          },
+          headerTintColor: "#fff", // Color del texto del encabezado
+          headerTitleStyle: {
+            fontWeight: "bold", // Estilo del título del encabezado
+          },
+        }}
+      >
+        <Stack.Screen name="MainScreen" component={MainScreen} />
 
-        <Login />
         {isAuthenticated && (
           <>
-            <Pressable
-              style={styles.button}
-              onPress={() => navigation.navigate("CreateEvent")}
-            >
-              <Text>Crear Evento</Text>
-            </Pressable>
-            <Stack.Navigator initialRouteName="EventList">
-              <Stack.Screen name="EventList" component={EventList} />
-              <Stack.Screen name="EventDetails" component={EventDetails} />
-              <Stack.Screen name="CreateEvent">
-                {(props) => <EventFormWrapper {...props} isEdit={false} />}
-              </Stack.Screen>
-              <Stack.Screen name="EditEvent">
-                {(props) => <EventFormWrapper {...props} isEdit={true} />}
-              </Stack.Screen>
-            </Stack.Navigator>
+            <Stack.Screen name="EventList" component={EventList} />
+            <Stack.Screen name="EventDetails" component={EventDetails} />
+            <Stack.Screen name="CreateEvent">
+              {(props) => <EventFormWrapper {...props} isEdit={false} />}
+            </Stack.Screen>
+            <Stack.Screen name="EditEvent">
+              {(props) => <EventFormWrapper {...props} isEdit={true} />}
+            </Stack.Screen>
           </>
         )}
-      </ScrollView>
+      </Stack.Navigator>
+
+      {/* </ScrollView> */}
     </View>
   );
 };

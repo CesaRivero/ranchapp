@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { View, Text, Image, Button, StyleSheet } from "react-native";
+import { View, Text, Image, Button, StyleSheet, Pressable } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 
 function Login() {
@@ -19,10 +19,14 @@ function Login() {
           <Text style={styles.userInfoText}>Bienvenido, {user.givenName}</Text>
           <Text style={styles.userInfoText}>Email: {user.email}</Text>
           <Image source={{ uri: user.photo }} style={styles.profileImage} />
-          <Button title="Cerrar Sesión" onPress={signOut} />
+          <Pressable style={styles.button} onPress={signOut}>
+            <Text>Cerrar Sesión</Text>
+          </Pressable>
         </View>
       ) : (
-        <Button title="Iniciar Sesión con Google" onPress={signIn} />
+        <Pressable style={styles.button} onPress={() => signIn()}>
+          <Text>Inicia sesión para continuar</Text>
+        </Pressable>
       )}
     </View>
   );
@@ -30,25 +34,30 @@ function Login() {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#f8f8f8", //cambiar color al necesario luego
+    backgroundColor: "#1b1b1b",
   },
   userInfo: {
-    alignItems: "center",
+    // alignItems: "center",
   },
   userInfoText: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#0000FF",
+    color: "white",
   },
   profileImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginVertical: 8,
     resizeMode: "contain",
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "#3498db",
+    padding: 8,
+    margin: 16,
+    borderRadius: 4,
+    alignItems: "center",
   },
 });
 

@@ -1,30 +1,7 @@
 import axios from "axios";
-import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-
-const useAccessToken = () => {
-  const [accessToken, setAccessToken] = useState(null);
-  const { getAccessToken } = useContext(AuthContext);
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      try {
-        const token = await getAccessToken();
-        setAccessToken(token);
-      } catch (error) {
-        console.error("Error getting access token:", error);
-      }
-    };
-
-    fetchAccessToken();
-  }, [getAccessToken]);
-
-  return accessToken;
-};
 
 // Listar contactos
 export async function listContacts(accessToken) {
-  // const accessToken = useAccessToken();
-
   if (!accessToken) {
     throw new Error("No access token available");
   }
@@ -52,15 +29,13 @@ export async function listContacts(accessToken) {
       email: contact.emailAddresses?.[0]?.value || "Sin email",
     }));
   } catch (error) {
-    console.error("Error al listar contactos:", error);
+    console.error("Error al listar contactos dentro de googlecontacts:", error);
     return [];
   }
 }
 
 // Obtener detalles de un contacto por su ID
 export async function getContactDetails(contactId, accessToken) {
-  // const accessToken = useAccessToken();
-
   if (!accessToken) {
     throw new Error("No access token available");
   }
@@ -79,7 +54,10 @@ export async function getContactDetails(contactId, accessToken) {
     );
     return response.data;
   } catch (error) {
-    console.error("Error al obtener detalles del contacto:", error);
+    console.error(
+      "Error al obtener detalles del contacto dentro de getcontaat en googlec:",
+      error
+    );
     throw error;
   }
 }
