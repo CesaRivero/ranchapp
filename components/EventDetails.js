@@ -130,16 +130,18 @@ const EventDetails = () => {
           <>
             {hasExpense && (
               <>
-                <Text>
+                <Text style={styles.text}>
                   Gasto: {event.extendedProperties?.shared?.numericValue}$
                 </Text>
-                <Text>
+                <Text style={styles.text}>
                   Gasto por persona:{" "}
                   {event.extendedProperties?.shared?.numericValue /
                     (event.attendees?.length + 1)}
                   $
                 </Text>
-                <Text>Creado por: {event.creator.email}</Text>
+                <Text style={styles.text}>
+                  Creado por: {event.creator.email}
+                </Text>
               </>
             )}
             {isCreator && (

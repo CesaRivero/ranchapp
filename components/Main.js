@@ -39,15 +39,33 @@ const MainContent = () => {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#3498db", // Fondo del encabezado
+            backgroundColor: "#1b1b1b", // Fondo del encabezado
+            height: 100,
+            shadowColor: "transparent", // Eliminar sombra en iOS
+            elevation: 0, // Eliminar sombra en Android
+            borderBottomWidth: 0, // Eliminar borde inferior
           },
           headerTintColor: "#fff", // Color del texto del encabezado
           headerTitleStyle: {
             fontWeight: "bold", // Estilo del título del encabezado
           },
+          headerTitleAlign: "center",
         }}
       >
-        <Stack.Screen name="MainScreen" component={MainScreen} />
+        <Stack.Screen
+          name="MainScreen"
+          component={MainScreen}
+          options={{
+            headerTitle: (props) => <Header {...props} />,
+            headerStyle: {
+              height: 230,
+              backgroundColor: "#1b1b1b", // Fondo del encabezado
+              shadowColor: "transparent", // Eliminar sombra en iOS
+              elevation: 0, // Eliminar sombra en Android
+              borderBottomWidth: 0,
+            },
+          }}
+        />
 
         {isAuthenticated && (
           <>
@@ -74,13 +92,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "stretch",
     backgroundColor: "#1b1b1b",
-  },
-  button: {
-    backgroundColor: "white", //seria el color azul mepa validar luego
-    padding: 8,
-    margin: 16,
-    borderRadius: 4,
-    alignItems: "center",
   },
 });
 export default MainContent;

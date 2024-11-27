@@ -18,7 +18,9 @@ function Login() {
         <View style={styles.userInfo}>
           <Text style={styles.userInfoText}>Bienvenido, {user.givenName}</Text>
           <Text style={styles.userInfoText}>Email: {user.email}</Text>
-          <Image source={{ uri: user.photo }} style={styles.profileImage} />
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: user.photo }} style={styles.profileImage} />
+          </View>
           <Pressable style={styles.button} onPress={signOut}>
             <Text>Cerrar Sesión</Text>
           </Pressable>
@@ -50,7 +52,10 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     resizeMode: "contain",
-    alignItems: "center",
+  },
+  imageContainer: {
+    alignItems: "center", // Centrar la imagen dentro del contenedor
+    marginVertical: 10, // Añadir margen vertical para separar la imagen del texto
   },
   button: {
     backgroundColor: "#3498db",

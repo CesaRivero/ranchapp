@@ -15,7 +15,7 @@ const MainScreen = () => {
     <>
       <View style={styles.container}>
         <ScrollView>
-          <Header />
+          {/* <Header /> */}
           <Login />
           {isAuthenticated && (
             <>
