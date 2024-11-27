@@ -1,16 +1,16 @@
 import { useContext, useEffect } from "react";
 import "react-native-gesture-handler";
-import { StyleSheet, View, Pressable, Text, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Header from "./Header";
-import MainScreen from "./MainScreen";
-import EventList from "./EventList";
+import MainScreen from "../screens/MainScreen";
 import EventDetails from "./EventDetails";
 import EventFormWrapper from "./EventFormWrapper";
 import { AuthContext } from "../context/AuthContext";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import EventDetailsScreen from "../screens/EventDetailsScreen";
+import EventFormScreen from "../screens/EventFormScreen";
 
 const Stack = createStackNavigator();
 
@@ -34,7 +34,6 @@ const MainContent = () => {
         { paddingTop: insets.top, paddingBottom: insets.bottom },
       ]}
     >
-      {/* <ScrollView> */}
       <StatusBar style="light" />
       <Stack.Navigator
         screenOptions={{
@@ -58,7 +57,7 @@ const MainContent = () => {
           options={{
             headerTitle: (props) => <Header {...props} />,
             headerStyle: {
-              height: 230,
+              height: 256,
               backgroundColor: "#1b1b1b", // Fondo del encabezado
               shadowColor: "transparent", // Eliminar sombra en iOS
               elevation: 0, // Eliminar sombra en Android
@@ -69,19 +68,19 @@ const MainContent = () => {
 
         {isAuthenticated && (
           <>
-            <Stack.Screen name="EventList" component={EventList} />
-            <Stack.Screen name="EventDetails" component={EventDetails} />
+            <Stack.Screen
+              name="EventDetailsScreen"
+              component={EventDetailsScreen}
+            />
             <Stack.Screen name="CreateEvent">
-              {(props) => <EventFormWrapper {...props} isEdit={false} />}
+              {(props) => <EventFormScreen {...props} isEdit={false} />}
             </Stack.Screen>
             <Stack.Screen name="EditEvent">
-              {(props) => <EventFormWrapper {...props} isEdit={true} />}
+              {(props) => <EventFormScreen {...props} isEdit={true} />}
             </Stack.Screen>
           </>
         )}
       </Stack.Navigator>
-
-      {/* </ScrollView> */}
     </View>
   );
 };

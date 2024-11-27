@@ -16,9 +16,9 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import { deleteEvent, getEventDetails } from "../services/googleCalendar";
 
-const EventDetails = () => {
-  const route = useRoute();
-  const { id } = route.params;
+const EventDetails = ({ id }) => {
+  // const route = useRoute();
+  // const { id } = route.params;
   const [event, setEvent] = useState(null);
   const navigation = useNavigation();
   const { isAuthenticated, user, getAccessToken } = useContext(AuthContext);

@@ -39,7 +39,7 @@ function EventList() {
             key={event.id}
             style={styles.eventCard}
             onPress={() =>
-              navigation.navigate("EventDetails", { id: event.id })
+              navigation.navigate("EventDetailsScreen", { id: event.id })
             }
           >
             <Text style={styles.eventTitle}>{event.summary}</Text>

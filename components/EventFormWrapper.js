@@ -18,7 +18,7 @@ const EventFormWrapper = ({ isEdit }) => {
       const accessToken = await getAccessToken();
       const createdEvent = await createEvent(event, accessToken);
       console.log("Evento creado:", createdEvent);
-      navigation.navigate("EventDetails", { id: createdEvent.id });
+      navigation.navigate("EventDetailsScreen", { id: createdEvent.id });
     } catch (error) {
       console.error(
         "Error al crear el evento dentro de eventfornwrapper:",
@@ -34,7 +34,7 @@ const EventFormWrapper = ({ isEdit }) => {
       const accessToken = await getAccessToken();
       await updateEvent(event.id, event, accessToken);
       console.log("Evento actualizado:", event);
-      navigation.navigate("EventDetails", { id: event.id });
+      navigation.navigate("EventDetailsScreen", { id: event.id });
     } catch (error) {
       console.error("Error al actualizar el evento:", error);
     }
