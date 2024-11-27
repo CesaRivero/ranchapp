@@ -1,2 +1,3 @@
 Funcionalidades esta, faltaria validar y css
+organice las pantallas por separado, faltaria hacer la nav y acomodar el crear evento y la info del usuario
 para ejecutar hay que usar el eas prebuild y luego npx expo run:android
