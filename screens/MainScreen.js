@@ -18,12 +18,12 @@ const MainScreen = () => {
           <Login />
           {isAuthenticated && (
             <>
-              <Pressable
+              {/* <Pressable
                 style={styles.button}
                 onPress={() => navigation.navigate("CreateEvent")}
               >
                 <Text>Crear Evento</Text>
-              </Pressable>
+              </Pressable> */}
               <EventList />
             </>
           )}

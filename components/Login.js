@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { View, Text, Image, Button, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 
 function Login() {
-  const { isAuthenticated, user, signIn, signOut } = useContext(AuthContext);
-
+  const { isAuthenticated, user, signIn } = useContext(AuthContext);
+  console.log("isauthenticated en login:", isAuthenticated);
   if (isAuthenticated && user) {
     console.log(
       "user dentro de login cuando isAuthenticated y user son true:",
@@ -14,18 +14,7 @@ function Login() {
 
   return (
     <View style={styles.container}>
-      {isAuthenticated && user ? (
-        <View style={styles.userInfo}>
-          <Text style={styles.userInfoText}>Bienvenido, {user.givenName}</Text>
-          <Text style={styles.userInfoText}>Email: {user.email}</Text>
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: user.photo }} style={styles.profileImage} />
-          </View>
-          <Pressable style={styles.button} onPress={signOut}>
-            <Text>Cerrar Sesión</Text>
-          </Pressable>
-        </View>
-      ) : (
+      {isAuthenticated && user ? null : (
         <Pressable style={styles.button} onPress={() => signIn()}>
           <Text>Inicia sesión para continuar</Text>
         </Pressable>
