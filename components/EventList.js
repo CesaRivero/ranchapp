@@ -1,29 +1,39 @@
-import React, { useEffect, useState, useContext } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { listUpcomingEvents } from "../services/googleCalendar";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { format } from "date-fns"; // Importa la función de formato de date-fns
 
 function EventList() {
   const { isAuthenticated, getAccessToken } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      async function fetchEvents() {
-        try {
-          const accessToken = await getAccessToken();
-          const result = await listUpcomingEvents(accessToken);
-          setEvents(result);
-          console.log("Eventos:", result);
-        } catch (error) {
-          console.error("Error al listar eventos:", error);
-        }
-      }
-      fetchEvents();
+  const fetchEvents = async () => {
+    try {
+      const accessToken = await getAccessToken();
+      const result = await listUpcomingEvents(accessToken);
+      setEvents(result);
+      console.log("Eventos:", result);
+    } catch (error) {
+      console.error("Error al listar eventos:", error);
     }
-  }, [isAuthenticated]);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isAuthenticated) {
+        fetchEvents();
+      }
+    }, [isAuthenticated])
+  );
 
   if (!isAuthenticated) {
     return <Text>Por favor, inicia sesión para ver tus eventos.</Text>;
@@ -32,7 +42,7 @@ function EventList() {
   return (
     <View style={styles.container}>
       {events.length === 0 ? (
-        <Text style={styles.errorText}>No hay eventos disponibles.</Text>
+        <ActivityIndicator size="large" color="#3498db" />
       ) : (
         events.map((event) => (
           <TouchableOpacity
@@ -43,8 +53,16 @@ function EventList() {
             }
           >
             <Text style={styles.eventTitle}>{event.summary}</Text>
-            <Text>{event.start.dateTime}</Text>
-            <Text>{event.location}</Text>
+            <Text style={styles.eventTextContainer}>
+              {format(new Date(event.start.dateTime), "dd/MM/yyyy HH:mm")}
+            </Text>
+            <Text style={styles.eventTextContainer}>
+              {format(new Date(event.end.dateTime), "dd/MM/yyyy HH:mm")}
+            </Text>
+            <Text style={styles.eventTextLocation}>{event.location}</Text>
+            <Text style={styles.eventTextContainer}>
+              {event.organizer.email}
+            </Text>
           </TouchableOpacity>
         ))
       )}
@@ -55,7 +73,7 @@ function EventList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 26, //vatia el tamaño de las card ver luego
     backgroundColor: "#1b1b1b",
   },
   eventCard: {
@@ -67,14 +85,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    width: "100%",
   },
   eventTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    textAlign: "center", // Centra el texto horizontalmente
+  },
+  eventTextLocation: {
+    textAlign: "center",
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  eventTextContainer: {
+    textAlign: "center", // Centra el contenido horizontalmente
   },
   errorText: {
     fontSize: 30,
-    color: "red",
+    color: "#3498db",
   },
 });
 

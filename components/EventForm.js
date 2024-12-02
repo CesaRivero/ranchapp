@@ -3,17 +3,18 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { listContacts } from "../services/googleContacts";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { getEventDetails } from "../services/googleCalendar";
-
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { format } from "date-fns";
 const EventForm = ({ onSubmit }) => {
   const { isAuthenticated, getAccessToken } = useContext(AuthContext);
   const route = useRoute();
@@ -32,16 +33,6 @@ const EventForm = ({ onSubmit }) => {
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
-
-  const formatDateTimeLocal = (dateTime) => {
-    const date = new Date(dateTime);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
 
   useEffect(() => {
     let isMounted = true;
@@ -102,6 +93,21 @@ const EventForm = ({ onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Validaciones
+    if (!title.trim()) {
+      alert("Por favor, añade un título.");
+      return;
+    }
+
+    if (!description.trim()) {
+      alert("Por favor, añade una descripción.");
+      return;
+    }
+
+    if (!location.trim()) {
+      alert("Por favor, añade una ubicación.");
+      return;
+    }
     if (participants.length === 0) {
       alert("Por favor, añade al menos un participante.");
       return;
@@ -225,24 +231,26 @@ const EventForm = ({ onSubmit }) => {
               style={styles.input}
               value={description}
               onChangeText={setDescription}
+              required
             />
             <Text style={{ color: "white" }}>Ubicación:</Text>
             <TextInput
               style={styles.input}
               value={location}
               onChangeText={setLocation}
+              required
             />
             <Text style={{ color: "white" }}>Fecha y hora de inicio:</Text>
             <View style={styles.dateTimePicker}>
-              <Button
-                title="Seleccionar fecha y hora"
-                onPress={showStartDatePicker}
-              />
-              <TextInput
-                style={styles.input}
-                value={formatDateTimeLocal(startDate)}
-                editable={false}
-              />
+              <TouchableOpacity onPress={showStartDatePicker}>
+                <View pointerEvents="none">
+                  <TextInput
+                    style={styles.input}
+                    value={format(startDate, "dd/MM/yyyy HH:mm")}
+                    editable={false}
+                  />
+                </View>
+              </TouchableOpacity>
               <DateTimePickerModal
                 isVisible={isStartDatePickerVisible}
                 mode="datetime"
@@ -252,20 +260,21 @@ const EventForm = ({ onSubmit }) => {
             </View>
             <Text style={{ color: "white" }}>Fecha y hora de fin:</Text>
             <View style={styles.dateTimePicker}>
-              <Button
-                title="Seleccionar fecha y hora"
-                onPress={showEndDatePicker}
-              />
-              <TextInput
-                style={styles.input}
-                value={formatDateTimeLocal(endDate)}
-                editable={false}
-              />
+              <TouchableOpacity onPress={showEndDatePicker}>
+                <View pointerEvents="none">
+                  <TextInput
+                    style={styles.input}
+                    value={format(endDate, "dd/MM/yyyy HH:mm")}
+                    editable={false}
+                  />
+                </View>
+              </TouchableOpacity>
               <DateTimePickerModal
                 isVisible={isEndDatePickerVisible}
                 mode="datetime"
                 onConfirm={handleEndDateConfirm}
                 onCancel={hideEndDatePicker}
+                minimumDate={startDate}
               />
             </View>
             <Text style={{ color: "white" }}>Gasto:</Text>
@@ -275,20 +284,31 @@ const EventForm = ({ onSubmit }) => {
               onChangeText={setAmount}
             />
             <Text style={{ color: "white" }}>Participantes:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Añadir participante"
-              value={value}
-              onChangeText={onChange}
-              onBlur={handleAddParticipant}
-            />
+            <View style={styles.participantInputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Añadir participante"
+                placeholderTextColor="#ccc" // Cambia el color del placeholder
+                value={value}
+                onChangeText={onChange}
+              />
+              <Pressable
+                style={styles.addButton}
+                onPress={handleAddParticipant}
+              >
+                <Text style={styles.addButtonText}>Añadir</Text>
+              </Pressable>
+            </View>
           </>
         }
         data={suggestions}
         keyExtractor={(item) => item.email}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => onSuggestionSelected(item)}>
-            <Text>
+          <TouchableOpacity
+            style={styles.suggestionItem}
+            onPress={() => onSuggestionSelected(item)}
+          >
+            <Text style={styles.suggestionText}>
               {item.name} ({item.email})
             </Text>
           </TouchableOpacity>
@@ -301,14 +321,17 @@ const EventForm = ({ onSubmit }) => {
               renderItem={({ item }) => (
                 <View style={styles.participant}>
                   <Text>{item}</Text>
-                  <Button
-                    title="Eliminar"
+                  <TouchableOpacity
                     onPress={() => handleRemoveParticipant(item)}
-                  />
+                  >
+                    <FontAwesome6 name="trash-can" size={24} color="black" />
+                  </TouchableOpacity>
                 </View>
               )}
             />
-            <Button title="Guardar" onPress={handleSubmit} />
+            <Pressable style={styles.button} onPress={handleSubmit}>
+              <Text>Guardar</Text>
+            </Pressable>
           </>
         }
       />
@@ -341,7 +364,26 @@ const styles = StyleSheet.create({
     padding: 8,
     marginVertical: 4,
     backgroundColor: "#f8f8f8",
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  suggestionItem: {
+    padding: 15,
+    backgroundColor: "#2c3e50",
+    borderBottomWidth: 0,
+    borderBottomColor: "#ccc",
+    marginBottom: 8,
+    marginTop: 8,
+  },
+  suggestionText: {
+    color: "white",
+  },
+  button: {
+    backgroundColor: "#3498db",
+    padding: 8,
+    margin: 16,
     borderRadius: 4,
+    alignItems: "center",
   },
 });
 

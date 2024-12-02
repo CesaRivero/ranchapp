@@ -13,6 +13,10 @@ const EventFormWrapper = ({ isEdit }) => {
       "handleCreateEvent called with event dentro de eventformwrapper: ",
       event
     );
+    console.log(
+      "isEdit dentro de eventformwrapper y dentro de hadlecreatevenet: ",
+      isEdit
+    );
 
     try {
       const accessToken = await getAccessToken();
@@ -39,7 +43,7 @@ const EventFormWrapper = ({ isEdit }) => {
       console.log("Evento actualizado:", event);
       navigation.navigate("MainStack", {
         screen: "EventDetailsScreen",
-        params: { id: createdEvent.id },
+        params: { id: event.id },
       });
     } catch (error) {
       console.error("Error al actualizar el evento:", error);

@@ -102,6 +102,12 @@ const MainContent = () => {
               backgroundColor: "#3498db", // Fondo de la barra de pestañas
               height: 60,
               borderRadius: 50,
+              marginBottom: 10,
+              marginTop: 10,
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25, // Opacidad de la sombra
+              shadowRadius: 3.84, // Radio de la sombra
+              elevation: 5,
             },
             tabBarIconStyle: {
               justifyContent: "center", // Centra los iconos verticalmente

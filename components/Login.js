@@ -16,7 +16,7 @@ function Login() {
     <View style={styles.container}>
       {isAuthenticated && user ? null : (
         <Pressable style={styles.button} onPress={() => signIn()}>
-          <Text>Inicia sesión para continuar</Text>
+          <Text>Inicia sesión</Text>
         </Pressable>
       )}
     </View>

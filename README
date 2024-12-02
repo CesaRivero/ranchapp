@@ -1,3 +1,5 @@
 Funcionalidades esta, faltaria validar y css
-organice las pantallas por separado, faltaria hacer la nav y acomodar el crear evento y la info del usuario
-para ejecutar hay que usar el eas prebuild y luego npx expo run:android
+
+Faltaria terminar css de , validar tema notificaciones(en dispositivo fisico), validar asistencia dentro de la app, editar css e icon de gastos. Actualizar pagina con el deslizado hacia abajo. arreglar gap entre lista de eventos y logo/header . agregar politica de privacidad en info de usuario 
+
+ver como agregar tema de analiticas y ads 

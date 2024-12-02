@@ -7,15 +7,15 @@ import {
   FlatList,
   Alert,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
-import {
-  useRoute,
-  useNavigation,
-  CommonActions,
-} from "@react-navigation/native";
+import { useNavigation, CommonActions } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { deleteEvent, getEventDetails } from "../services/googleCalendar";
-
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { format } from "date-fns";
 const EventDetails = ({ id }) => {
   // const route = useRoute();
   // const { id } = route.params;
@@ -97,7 +97,7 @@ const EventDetails = ({ id }) => {
   };
 
   if (!event) {
-    return <Text>Cargando...</Text>;
+    return <ActivityIndicator size="large" color="#3498db" />;
   }
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -113,19 +113,48 @@ const EventDetails = ({ id }) => {
       <FlatList
         ListHeaderComponent={
           <>
-            <Text style={styles.title}>Titulo: {event.summary}</Text>
-            <Text style={styles.text}>Descripción: {event.description}</Text>
-            <Text style={styles.link} onPress={() => Linking.openURL(mapsUrl)}>
-              {event.location}
-            </Text>
-            <Text style={styles.text}>Inicio: {event.start.dateTime}</Text>
-            <Text style={styles.text}>Fin: {event.end.dateTime}</Text>
-            <Text style={styles.text}>Participantes:</Text>
+            <Text style={styles.title}>{event.summary}</Text>
+            <Text style={styles.text}>{event.description}</Text>
+            <View style={styles.locationContainer}>
+              <FontAwesome6 name="location-dot" size={24} color="black" />
+              <Text
+                style={styles.link}
+                onPress={() => Linking.openURL(mapsUrl)}
+              >
+                {event.location}
+              </Text>
+            </View>
+            <View style={styles.dateContainer}>
+              <Feather name="calendar" size={24} color="black" />
+              <View style={styles.dateTextContainer}>
+                <Text style={styles.text}>
+                  {format(event.start.dateTime, "dd/MM/yyyy HH:mm")}
+                </Text>
+                <Text style={styles.text}>
+                  {format(event.end.dateTime, "dd/MM/yyyy HH:mm")}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.participantsContainer}>
+              <FontAwesome6 name="users" size={24} color="black" />
+              <Text style={styles.participantsText}>Participantes:</Text>
+            </View>
           </>
         }
         data={event.attendees}
         keyExtractor={(item) => item.email}
-        renderItem={({ item }) => <Text style={styles.text}>{item.email}</Text>}
+        renderItem={({ item }) => (
+          <View style={styles.participantContainer}>
+            {item.responseStatus === "accepted" ? (
+              <MaterialIcons name="check" size={24} color="green" />
+            ) : item.responseStatus === "declined" ? (
+              <MaterialIcons name="cancel" size={24} color="red" />
+            ) : (
+              <MaterialIcons name="pending-actions" size={24} color="grey" />
+            )}
+            <Text style={styles.text}>{item.email}</Text>
+          </View>
+        )}
         ListFooterComponent={
           <>
             {hasExpense && (
@@ -134,7 +163,7 @@ const EventDetails = ({ id }) => {
                   Gasto: {event.extendedProperties?.shared?.numericValue}$
                 </Text>
                 <Text style={styles.text}>
-                  Gasto por persona:{" "}
+                  Gasto por persona:
                   {event.extendedProperties?.shared?.numericValue /
                     (event.attendees?.length + 1)}
                   $
@@ -146,12 +175,14 @@ const EventDetails = ({ id }) => {
             )}
             {isCreator && (
               <>
-                <Pressable style={styles.button} onPress={handleEditClick}>
-                  <Text style={styles.buttonText}>Editar Evento</Text>
-                </Pressable>
-                <Pressable style={styles.button} onPress={handleDelete}>
-                  <Text style={styles.buttonText}>Eliminar Evento</Text>
-                </Pressable>
+                <View style={styles.buttonContainer}>
+                  <Pressable style={styles.button} onPress={handleEditClick}>
+                    <Feather name="edit-3" size={24} color="black" />
+                  </Pressable>
+                  <Pressable style={styles.button} onPress={handleDelete}>
+                    <FontAwesome6 name="trash-can" size={24} color="black" />
+                  </Pressable>
+                </View>
               </>
             )}
           </>
@@ -167,19 +198,36 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#1b1b1b",
+    justifyContent: "center",
+    // alignItems: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row", // Coloca los botones uno al lado del otro
+    justifyContent: "space-between", // Espacio entre los botones
+    alignItems: "center", // Alinea los botones verticalmente en el centro
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 8,
     color: "white",
+    // textAlign: "center",
   },
   link: {
-    color: "blue",
-    textDecorationLine: "underline",
+    color: "lightgray",
+    textDecorationLine: "none",
+    fontSize: 20,
+    marginRight: 8,
+    marginBottom: 8,
+    marginLeft: 20,
   },
   text: {
     color: "white",
+
+    // textAlign: "center",
+    fontSize: 16,
+    marginBottom: 8,
+    marginLeft: 20,
   },
   button: {
     backgroundColor: "#3498db",
@@ -187,13 +235,53 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 4,
     alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
+    justifyContent: "center",
+    width: 140, // Ajusta la anchura del botón
+    height: 40,
   },
   flatListContent: {
-    paddingBottom: 16,
+    padding: 5,
+    backgroundColor: "#1b1b1b",
+    borderWidth: 5, // Ancho del borde
+    borderColor: "#000", // Color del borde
+    borderRadius: 10,
+  },
+  participantContainer: {
+    flexDirection: "row",
+    // justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#2c3e50",
+    borderRadius: 8,
+    marginVertical: 4,
+  },
+  locationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  dateContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", // Asegura que los elementos estén distribuidos uniformemente
+    width: "100%", // Asegura que el contenedor ocupe todo el ancho disponible
+  },
+  dateTextContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginLeft: -5,
+  },
+  participantsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  participantsText: {
+    color: "white",
+    fontSize: 16,
+    marginLeft: -318, // Añade un margen izquierdo para separar el texto del icono
   },
 });
 

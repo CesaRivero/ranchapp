@@ -1,12 +1,13 @@
 import { View, StyleSheet } from "react-native";
 import EventFormWrapper from "../components/EventFormWrapper";
 import { useRoute } from "@react-navigation/native";
-const EventFormScreen = ({ idEdit }) => {
+const EventFormScreen = ({ isEdit }) => {
   const route = useRoute();
+  console.log("idEdit dentro de eventformscreen: ", isEdit);
 
   return (
     <View style={styles.container}>
-      <EventFormWrapper isEdit={idEdit} />
+      <EventFormWrapper isEdit={isEdit} />
     </View>
   );
 };

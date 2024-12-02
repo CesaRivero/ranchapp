@@ -1,27 +1,9 @@
-import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
-// const useAccessToken = () => {
-//   const [accessToken, setAccessToken] = useState(null);
-//   const { getAccessToken } = useContext(AuthContext);
-
-//   useEffect(() => {
-//     const fetchAccessToken = async () => {
-//       try {
-//         const token = await getAccessToken();
-//         setAccessToken(token);
-//       } catch (error) {
-//         console.error("Error getting access token:", error);
-//       }
-//     };
-
-//     fetchAccessToken();
-//   }, [getAccessToken]);
-
-//   return accessToken;
-// };
-
-// Listar eventos próximos
+import {
+  scheduleDeleteNotification,
+  scheduleEditNotification,
+  scheduleNotification,
+} from "./notificationSetup";
 export async function listUpcomingEvents(accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
@@ -54,7 +36,7 @@ export async function createEvent(event, accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
   }
-  console.log("Creating event with access token:", accessToken); // Agregar log para depuración
+  console.log("Creating event with access token:", accessToken);
 
   try {
     const response = await axios.post(
@@ -66,6 +48,8 @@ export async function createEvent(event, accessToken) {
         },
       }
     );
+    await scheduleNotification(event);
+
     return response.data;
   } catch (error) {
     console.error("Error al crear el evento dentro de googlecalendar:", error);
@@ -89,6 +73,8 @@ export async function updateEvent(eventId, updatedEvent, accessToken) {
         },
       }
     );
+    await scheduleEditNotification(updatedEvent);
+
     return response.data;
   } catch (error) {
     console.error("Error al actualizar el evento:", error);
@@ -111,6 +97,8 @@ export async function deleteEvent(eventId, accessToken) {
         },
       }
     );
+    await scheduleDeleteNotification({ summary: eventId });
+
     return true;
   } catch (error) {
     console.error("Error al eliminar el evento:", error);
