@@ -26,25 +26,7 @@ function Login() {
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    padding: 10,
     backgroundColor: "#1b1b1b",
-  },
-  userInfo: {
-    // alignItems: "center",
-  },
-  userInfoText: {
-    fontSize: 16,
-    color: "white",
-  },
-  profileImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    resizeMode: "contain",
-  },
-  imageContainer: {
-    alignItems: "center", // Centrar la imagen dentro del contenedor
-    marginVertical: 10, // Añadir margen vertical para separar la imagen del texto
   },
   button: {
     backgroundColor: "#3498db",

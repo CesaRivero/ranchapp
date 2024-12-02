@@ -159,18 +159,27 @@ const EventDetails = ({ id }) => {
           <>
             {hasExpense && (
               <>
-                <Text style={styles.text}>
-                  Gasto: {event.extendedProperties?.shared?.numericValue}$
-                </Text>
-                <Text style={styles.text}>
-                  Gasto por persona:
-                  {event.extendedProperties?.shared?.numericValue /
-                    (event.attendees?.length + 1)}
-                  $
-                </Text>
-                <Text style={styles.text}>
-                  Creado por: {event.creator.email}
-                </Text>
+                <View style={styles.gastoContainer}>
+                  <FontAwesome6
+                    name="money-check-dollar"
+                    size={24}
+                    color="black"
+                  />
+                  <View style={styles.gastoTextContainer}>
+                    <Text style={styles.text}>
+                      Gasto: {event.extendedProperties?.shared?.numericValue}$
+                    </Text>
+                    <Text style={styles.text}>
+                      Gasto por persona:
+                      {event.extendedProperties?.shared?.numericValue /
+                        (event.attendees?.length + 1)}
+                      $
+                    </Text>
+                    <Text style={styles.text}>
+                      Creado por: {event.creator.email}
+                    </Text>
+                  </View>
+                </View>
               </>
             )}
             {isCreator && (
@@ -281,7 +290,19 @@ const styles = StyleSheet.create({
   participantsText: {
     color: "white",
     fontSize: 16,
-    marginLeft: -318, // Añade un margen izquierdo para separar el texto del icono
+    marginLeft: 10, // Añade un margen izquierdo para separar el texto del icono
+  },
+  gastoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  gastoTextContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginLeft: -5,
   },
 });
 

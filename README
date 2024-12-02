@@ -1,5 +1,5 @@
 Funcionalidades esta, faltaria validar y css
 
-Faltaria terminar css de , validar tema notificaciones(en dispositivo fisico), validar asistencia dentro de la app, editar css e icon de gastos. Actualizar pagina con el deslizado hacia abajo. arreglar gap entre lista de eventos y logo/header . agregar politica de privacidad en info de usuario 
+Faltaria terminar css de , validar tema notificaciones(en dispositivo fisico), validar asistencia dentro de la app. Actualizar pagina con el deslizado hacia abajo. 
 
-ver como agregar tema de analiticas y ads 
+ver como agregar tema de analiticas y ads . Lista de contactos en la info del usuario, se muestra pero la logica de agregar y editar contactos esta presentando falla, por los momentos se muestran nada mas !

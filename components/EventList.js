@@ -10,9 +10,9 @@ import { listUpcomingEvents } from "../services/googleCalendar";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { format } from "date-fns"; // Importa la función de formato de date-fns
-
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 function EventList() {
-  const { isAuthenticated, getAccessToken } = useContext(AuthContext);
+  const { isAuthenticated, getAccessToken, user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const navigation = useNavigation();
 
@@ -52,6 +52,9 @@ function EventList() {
               navigation.navigate("EventDetailsScreen", { id: event.id })
             }
           >
+            {event.creator.self && (
+              <FontAwesome name="user" size={24} color="black" />
+            )}
             <Text style={styles.eventTitle}>{event.summary}</Text>
             <Text style={styles.eventTextContainer}>
               {format(new Date(event.start.dateTime), "dd/MM/yyyy HH:mm")}

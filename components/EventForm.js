@@ -146,8 +146,12 @@ const EventForm = ({ onSubmit }) => {
 
   const handleAddParticipant = () => {
     if (value && !participants.includes(value)) {
-      setParticipants([...participants, value]);
-      setValue("");
+      if (value.includes("@")) {
+        setParticipants([...participants, value]);
+        setValue("");
+      } else {
+        alert("Ingrese un mail valido");
+      }
     }
   };
 
@@ -292,12 +296,15 @@ const EventForm = ({ onSubmit }) => {
                 value={value}
                 onChangeText={onChange}
               />
-              <Pressable
-                style={styles.addButton}
-                onPress={handleAddParticipant}
-              >
-                <Text style={styles.addButtonText}>Añadir</Text>
-              </Pressable>
+
+              {suggestions.length === 0 && value.trim() !== "" && (
+                <Pressable
+                  style={styles.addButton}
+                  onPress={handleAddParticipant}
+                >
+                  <Text>Añadir</Text>
+                </Pressable>
+              )}
             </View>
           </>
         }
@@ -384,6 +391,13 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 4,
     alignItems: "center",
+  },
+  addButton: {
+    backgroundColor: "#3498db",
+    padding: 8,
+    marginLeft: 8,
+    borderRadius: 4,
+    width: 60,
   },
 });
 

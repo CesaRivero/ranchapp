@@ -1,8 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
-import { Pressable, StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import Header from "../components/Header";
 import Login from "../components/Login";
 import EventList from "../components/EventList";
 import { ScrollView } from "react-native-gesture-handler";
