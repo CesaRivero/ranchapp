@@ -232,7 +232,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
-
     // textAlign: "center",
     fontSize: 16,
     marginBottom: 8,

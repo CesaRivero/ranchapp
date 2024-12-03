@@ -1,5 +1,27 @@
-Funcionalidades esta, faltaria validar y css
+# Proyecto RanchApp
 
-Faltaria terminar css de , validar tema notificaciones(en dispositivo fisico), validar asistencia dentro de la app. Actualizar pagina con el deslizado hacia abajo. 
+## Funcionalidades
 
-ver como agregar tema de analiticas y ads . Lista de contactos en la info del usuario, se muestra pero la logica de agregar y editar contactos esta presentando falla, por los momentos se muestran nada mas !
+- **Gestión de eventos**: Facilita la organización de eventos sociales entre amigos y familiares.
+- **Confirmación de asistencia**: Permite a los participantes confirmar su asistencia.
+- **Lista de contactos**: Muestra la lista de contactos del usuario.
+
+## Tareas Pendientes
+
+- [ ] Terminar el CSS.
+- [ ] Validar notificaciones en dispositivos físicos.
+- [ ] Validar asistencia dentro de la app.
+- [ ] Actualizar la página con el deslizado hacia abajo.
+- [ ] Agregar analíticas y anuncios.
+- [ ] Corregir la lógica de agregar y editar contactos.
+
+## Problemas Conocidos
+
+- La lógica de agregar y editar contactos está presentando fallas. Actualmente, solo se muestran los contactos.
+
+## Instalación
+
+1. Clona el repositorio:
+   ```sh
+   git clone https://github.com/tu-usuario/ranchapp.git
+   ```

@@ -76,11 +76,11 @@ function EventList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 26, //vatia el tamaño de las card ver luego
+    padding: 25, //vatia el tamaño de las card ver luego
     backgroundColor: "#1b1b1b",
   },
   eventCard: {
-    padding: 16,
+    padding: 10, //16
     marginVertical: 8,
     backgroundColor: "#3498db",
     borderRadius: 8,
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   },
   eventTextContainer: {
     textAlign: "center", // Centra el contenido horizontalmente
+    fontSize: 15,
   },
   errorText: {
     fontSize: 30,

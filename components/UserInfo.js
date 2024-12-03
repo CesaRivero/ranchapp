@@ -15,6 +15,7 @@ import { FlatList } from "react-native-gesture-handler";
 const UserInfo = () => {
   const { isAuthenticated, user, signOut } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
+  const [aboutUsModalVisible, setAboutUsModalVisible] = useState(false);
 
   const renderHeader = () => (
     <View>
@@ -31,9 +32,16 @@ const UserInfo = () => {
     </View>
   );
   const renderFooter = () => (
-    <View>
+    <View style={styles.footerContainer}>
+      <Image
+        source={require("../assets/logo-mini.png")}
+        style={styles.profileImageLogo}
+      />
       <Pressable onPress={() => setModalVisible(true)}>
         <Text style={styles.footerText}>Términos y Condiciones</Text>
+      </Pressable>
+      <Pressable onPress={() => setAboutUsModalVisible(true)}>
+        <Text style={styles.footerText}>Sobre Nosotros</Text>
       </Pressable>
     </View>
   );
@@ -43,10 +51,10 @@ const UserInfo = () => {
         <FlatList
           ListHeaderComponent={renderHeader}
           ListFooterComponent={renderFooter}
-          data={[]} // No necesitas datos aquí, ya que ContactList maneja sus propios datos
-          renderItem={null} // No necesitas renderizar elementos aquí
-          ListEmptyComponent={<ContactList />} // Renderiza ContactList cuando no hay datos
-          showsVerticalScrollIndicator={false} // Oculta la línea de desplazamiento
+          data={[]}
+          renderItem={null}
+          ListEmptyComponent={<ContactList />}
+          showsVerticalScrollIndicator={false}
         />
       ) : null}
 
@@ -166,6 +174,76 @@ const UserInfo = () => {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={aboutUsModalVisible}
+        onRequestClose={() => setAboutUsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <ScrollView>
+              <Text style={styles.modalTitle}>Sobre Nosotros</Text>
+              <View style={styles.personContainer}>
+                <Image
+                  source={{ uri: "https://ranchapp.github.io/img/cesar.png" }}
+                  style={styles.personImage}
+                />
+                <Text style={styles.personName}>César Rivero</Text>
+                <Text style={styles.personDescription}>
+                  "Con RanchApp, diseñamos una experiencia visual y de usuario
+                  sencilla y divertida, para que organizar y disfrutar eventos
+                  sea un placer."
+                </Text>
+              </View>
+              <View style={styles.personContainer}>
+                <Image
+                  source={{
+                    uri: "https://ranchapp.github.io/img/victoria.png",
+                  }}
+                  style={styles.personImage}
+                />
+                <Text style={styles.personName}>
+                  Maria Victoria Payotte Ripa
+                </Text>
+                <Text style={styles.personDescription}>
+                  "Nos enfocamos en cada detalle para convertir cada reunión en
+                  una experiencia inolvidable."
+                </Text>
+              </View>
+              <View style={styles.personContainer}>
+                <Image
+                  source={{ uri: "https://ranchapp.github.io/img/santino.png" }}
+                  style={styles.personImage}
+                />
+                <Text style={styles.personName}>Santino Fazio</Text>
+                <Text style={styles.personDescription}>
+                  "RanchApp conecta a las personas de manera fluida, haciendo
+                  que cada evento sea fácil de planificar y memorable de vivir."
+                </Text>
+              </View>
+              <View style={styles.personContainer}>
+                <Image
+                  source={{ uri: "https://ranchapp.github.io/img/ignacio.png" }}
+                  style={styles.personImage}
+                />
+                <Text style={styles.personName}>Ignacio Armendariz</Text>
+                <Text style={styles.personDescription}>
+                  "Creamos una tecnología sólida que garantiza una experiencia
+                  sin interrupciones, para que cada evento sea perfecto."
+                </Text>
+              </View>
+            </ScrollView>
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => setAboutUsModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -184,6 +262,13 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     resizeMode: "contain",
+  },
+  profileImageLogo: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+    resizeMode: "contain",
+    textAlign: "center",
   },
   imageContainer: {
     alignItems: "center", // Centrar la imagen dentro del contenedor
@@ -207,7 +292,11 @@ const styles = StyleSheet.create({
   footerText: {
     color: "white",
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  footerContainer: {
+    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
@@ -247,6 +336,24 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "#1b1b1b",
     fontWeight: "bold",
+  },
+  personContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  personImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
+  },
+  personName: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  personDescription: {
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 export default UserInfo;
