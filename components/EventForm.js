@@ -11,7 +11,7 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { listContacts } from "../services/googleContacts";
 import { AuthContext } from "../context/AuthContext";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useTheme } from "@react-navigation/native";
 import { getEventDetails } from "../services/googleCalendar";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { format } from "date-fns";
@@ -33,6 +33,62 @@ const EventForm = ({ onSubmit }) => {
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
+  const { colors, fonts } = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 16,
+      backgroundColor: colors.background,
+    },
+    input: {
+      width: "100%",
+      padding: 8,
+      marginVertical: 8,
+      borderWidth: 1,
+      borderColor: "#ccc",
+      borderRadius: 4,
+      color: "white",
+    },
+    dateTimePicker: {
+      marginVertical: 8,
+    },
+    participant: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: 8,
+      marginVertical: 4,
+      backgroundColor: "#f8f8f8",
+      borderRadius: 10,
+      marginBottom: 10,
+    },
+    suggestionItem: {
+      padding: 15,
+      backgroundColor: "#2c3e50",
+      borderBottomWidth: 0,
+      borderBottomColor: "#ccc",
+      marginBottom: 8,
+      marginTop: 8,
+    },
+    suggestionText: {
+      color: "white",
+    },
+    button: {
+      backgroundColor: colors.button,
+      padding: 8,
+      margin: 16,
+      borderRadius: 4,
+      alignItems: "center",
+    },
+    addButton: {
+      backgroundColor: colors.button,
+      padding: 8,
+      marginLeft: 8,
+      borderRadius: 4,
+      width: 60,
+    },
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -345,60 +401,5 @@ const EventForm = ({ onSubmit }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#1b1b1b",
-  },
-  input: {
-    width: "100%",
-    padding: 8,
-    marginVertical: 8,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-    color: "white",
-  },
-  dateTimePicker: {
-    marginVertical: 8,
-  },
-  participant: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 8,
-    marginVertical: 4,
-    backgroundColor: "#f8f8f8",
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  suggestionItem: {
-    padding: 15,
-    backgroundColor: "#2c3e50",
-    borderBottomWidth: 0,
-    borderBottomColor: "#ccc",
-    marginBottom: 8,
-    marginTop: 8,
-  },
-  suggestionText: {
-    color: "white",
-  },
-  button: {
-    backgroundColor: "#3498db",
-    padding: 8,
-    margin: 16,
-    borderRadius: 4,
-    alignItems: "center",
-  },
-  addButton: {
-    backgroundColor: "#3498db",
-    padding: 8,
-    marginLeft: 8,
-    borderRadius: 4,
-    width: 60,
-  },
-});
 
 export default EventForm;

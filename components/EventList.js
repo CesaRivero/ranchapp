@@ -13,13 +13,13 @@ import {
   useFocusEffect,
   useTheme,
 } from "@react-navigation/native";
-import { format } from "date-fns"; // Importa la función de formato de date-fns
+import { format } from "date-fns";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 function EventList() {
   const { isAuthenticated, getAccessToken, user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const navigation = useNavigation();
-  const { colors, fonts } = useTheme(); // Accede a los colores y fuentes del tema
+  const { colors, fonts } = useTheme();
 
   const styles = StyleSheet.create({
     container: {

@@ -9,7 +9,11 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { useNavigation, CommonActions } from "@react-navigation/native";
+import {
+  useNavigation,
+  CommonActions,
+  useTheme,
+} from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { deleteEvent, getEventDetails } from "../services/googleCalendar";
 import Feather from "@expo/vector-icons/Feather";
@@ -22,7 +26,7 @@ const EventDetails = ({ id }) => {
   const [event, setEvent] = useState(null);
   const navigation = useNavigation();
   const { isAuthenticated, user, getAccessToken } = useContext(AuthContext);
-
+  console.log(event);
   useEffect(() => {
     if (isAuthenticated) {
       const fetchEventDetails = async () => {
@@ -107,6 +111,118 @@ const EventDetails = ({ id }) => {
   const hasExpense =
     event.extendedProperties?.shared?.numericValue != null &&
     event.extendedProperties.shared.numericValue !== "";
+  const confirmedAttendees =
+    event.attendees?.filter(
+      (attendee) => attendee.responseStatus === "accepted"
+    ) || [];
+  const totalPeople = confirmedAttendees.length + 1; // Confirmed attendees + organizer
+  const { colors, fonts } = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 16,
+      backgroundColor: colors.button, //puede ser hace una filla
+      justifyContent: "center",
+      borderRadius: 10,
+      margin: 10,
+      // alignItems: "center",
+    },
+    buttonContainer: {
+      flexDirection: "row", // Coloca los botones uno al lado del otro
+      justifyContent: "space-between", // Espacio entre los botones
+      alignItems: "center", // Alinea los botones verticalmente en el centro
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      marginBottom: 8,
+      marginLeft: 20,
+      color: colors.text,
+      // textAlign: "center",
+    },
+    link: {
+      color: "lightgray",
+      textDecorationLine: "none",
+      fontSize: 20,
+      marginRight: 8,
+      marginBottom: 8,
+      marginLeft: 20,
+    },
+    text: {
+      color: "white",
+      // textAlign: "center",
+      fontSize: 16,
+      marginBottom: 8,
+      marginLeft: 20,
+    },
+    button: {
+      backgroundColor: colors.text,
+      padding: 8,
+      margin: 16,
+      borderRadius: 4,
+      alignItems: "center",
+      justifyContent: "center",
+      width: 140, // Ajusta la anchura del botón
+      height: 40,
+    },
+    flatListContent: {
+      padding: 5,
+      backgroundColor: colors.background,
+      borderWidth: 5, // Ancho del borde
+      borderColor: "#000", // Color del borde
+      borderRadius: 10,
+    },
+    participantContainer: {
+      flexDirection: "row",
+      // justifyContent: "space-between",
+      alignItems: "center",
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      backgroundColor: "#2c3e50",
+      borderRadius: 8,
+      marginVertical: 4,
+    },
+    locationContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    dateContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+    },
+    dateTextContainer: {
+      flex: 1,
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginLeft: -5,
+    },
+    participantsContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 5,
+      marginBottom: 10,
+    },
+    participantsText: {
+      color: "white",
+      fontSize: 16,
+      marginLeft: 10,
+    },
+    gastoContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 5,
+      marginBottom: 10,
+    },
+    gastoTextContainer: {
+      flex: 1,
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginLeft: -5,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -172,7 +288,7 @@ const EventDetails = ({ id }) => {
                     <Text style={styles.text}>
                       Gasto por persona:
                       {event.extendedProperties?.shared?.numericValue /
-                        (event.attendees?.length + 1)}
+                        totalPeople}
                       $
                     </Text>
                     <Text style={styles.text}>
@@ -201,108 +317,5 @@ const EventDetails = ({ id }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#1b1b1b",
-    justifyContent: "center",
-    // alignItems: "center",
-  },
-  buttonContainer: {
-    flexDirection: "row", // Coloca los botones uno al lado del otro
-    justifyContent: "space-between", // Espacio entre los botones
-    alignItems: "center", // Alinea los botones verticalmente en el centro
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
-    color: "white",
-    // textAlign: "center",
-  },
-  link: {
-    color: "lightgray",
-    textDecorationLine: "none",
-    fontSize: 20,
-    marginRight: 8,
-    marginBottom: 8,
-    marginLeft: 20,
-  },
-  text: {
-    color: "white",
-    // textAlign: "center",
-    fontSize: 16,
-    marginBottom: 8,
-    marginLeft: 20,
-  },
-  button: {
-    backgroundColor: "#3498db",
-    padding: 8,
-    margin: 16,
-    borderRadius: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 140, // Ajusta la anchura del botón
-    height: 40,
-  },
-  flatListContent: {
-    padding: 5,
-    backgroundColor: "#1b1b1b",
-    borderWidth: 5, // Ancho del borde
-    borderColor: "#000", // Color del borde
-    borderRadius: 10,
-  },
-  participantContainer: {
-    flexDirection: "row",
-    // justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: "#2c3e50",
-    borderRadius: 8,
-    marginVertical: 4,
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  dateContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between", // Asegura que los elementos estén distribuidos uniformemente
-    width: "100%", // Asegura que el contenedor ocupe todo el ancho disponible
-  },
-  dateTextContainer: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginLeft: -5,
-  },
-  participantsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  participantsText: {
-    color: "white",
-    fontSize: 16,
-    marginLeft: 10, // Añade un margen izquierdo para separar el texto del icono
-  },
-  gastoContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  gastoTextContainer: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginLeft: -5,
-  },
-});
 
 export default EventDetails;

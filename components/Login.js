@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { AuthContext } from "../context/AuthContext";
+import { useTheme } from "@react-navigation/native";
 
 function Login() {
   const { isAuthenticated, user, signIn } = useContext(AuthContext);
@@ -11,6 +12,21 @@ function Login() {
       user
     );
   }
+  const { colors, fonts } = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      alignItems: "center",
+      backgroundColor: colors.background,
+    },
+    button: {
+      backgroundColor: colors.button,
+      padding: 8,
+      margin: 16,
+      borderRadius: 4,
+      alignItems: "center",
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -22,19 +38,5 @@ function Login() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: "#1b1b1b",
-  },
-  button: {
-    backgroundColor: "#3498db",
-    padding: 8,
-    margin: 16,
-    borderRadius: 4,
-    alignItems: "center",
-  },
-});
 
 export default Login;
