@@ -1,25 +1,25 @@
-# Proyecto RanchApp
+# 🌾 Proyecto RanchApp
 
-## Funcionalidades
+## ✨ Funcionalidades
 
-- **Gestión de eventos**: Facilita la organización de eventos sociales entre amigos y familiares.
-- **Confirmación de asistencia**: Permite a los participantes confirmar su asistencia.
-- **Lista de contactos**: Muestra la lista de contactos del usuario.
+- **📅 Gestión de eventos**: Facilita la organización de eventos sociales entre amigos y familiares.
+- **✅ Confirmación de asistencia**: Permite a los participantes confirmar su asistencia.
+- **📋 Lista de contactos**: Muestra la lista de contactos del usuario.
 
-## Tareas Pendientes
+## 🚀 Tareas Pendientes
 
-- [ ] Terminar el CSS.
-- [ ] Validar notificaciones en dispositivos físicos.
-- [ ] Validar asistencia dentro de la app.
-- [ ] Actualizar la página con el deslizado hacia abajo.
-- [ ] Agregar analíticas y anuncios.
-- [ ] Corregir la lógica de agregar y editar contactos.
+- [ ] 🎨 Terminar el CSS.
+- [ ] 📱 Validar notificaciones en dispositivos físicos.
+- [ ] 📝 Validar asistencia dentro de la app.
+- [ ] 🔄 Actualizar la página con el deslizado hacia abajo.
+- [ ] 📊 Agregar analíticas y anuncios.
+- [ ] 🛠️ Corregir la lógica de agregar y editar contactos.
 
-## Problemas Conocidos
+## 🐞 Problemas Conocidos
 
 - La lógica de agregar y editar contactos está presentando fallas. Actualmente, solo se muestran los contactos.
 
-## Instalación
+## 🛠️ Instalación
 
 1. Clona el repositorio:
    ```sh
