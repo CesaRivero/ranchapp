@@ -11,12 +11,123 @@ import { AuthContext } from "../context/AuthContext";
 import { useContext, useState } from "react";
 import ContactList from "./ContactList";
 import { FlatList } from "react-native-gesture-handler";
+import { useTheme } from "@react-navigation/native";
 
 const UserInfo = () => {
   const { isAuthenticated, user, signOut } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [aboutUsModalVisible, setAboutUsModalVisible] = useState(false);
+  const { colors, fonts } = useTheme();
 
+  const styles = StyleSheet.create({
+    container: {
+      alignItems: "center",
+      padding: 10,
+      backgroundColor: colors.background,
+    },
+    userInfoText: {
+      fontSize: 16,
+      color: colors.text,
+    },
+    profileImage: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      resizeMode: "contain",
+    },
+    profileImageLogo: {
+      width: 50,
+      height: 50,
+      borderRadius: 5,
+      resizeMode: "contain",
+      textAlign: "center",
+    },
+    imageContainer: {
+      alignItems: "center", // Centrar la imagen dentro del contenedor
+      marginVertical: 10, // Añadir margen vertical para separar la imagen del texto
+    },
+    button: {
+      backgroundColor: colors.button,
+      padding: 8,
+      margin: 16,
+      borderRadius: 4,
+      alignItems: "center",
+    },
+    userInfo: {
+      paddingVertical: 20,
+      paddingHorizontal: 50,
+      backgroundColor: colors.background,
+      borderWidth: 5, // Ancho del borde
+      borderColor: "#000", // Color del borde
+      borderRadius: 10,
+    },
+    footerText: {
+      color: colors.text,
+      textAlign: "center",
+      marginTop: 5,
+      marginBottom: 10,
+    },
+    footerContainer: {
+      alignItems: "center",
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      marginTop: 40,
+      marginBottom: 120,
+    },
+    modalContent: {
+      width: "80%",
+      backgroundColor: colors.text,
+      borderRadius: 10,
+      padding: 10,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      marginBottom: 10,
+    },
+    modalText: {
+      fontSize: 16,
+      marginBottom: 10,
+    },
+    modalNumber: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: colors.button,
+    },
+    closeButton: {
+      backgroundColor: colors.button,
+      padding: 10,
+      borderRadius: 5,
+      alignItems: "center",
+      marginTop: 10,
+    },
+    closeButtonText: {
+      color: colors.background,
+      fontWeight: "bold",
+    },
+    personContainer: {
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    personImage: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      marginBottom: 10,
+    },
+    personName: {
+      fontSize: 18,
+      fontWeight: "bold",
+    },
+    personDescription: {
+      fontSize: 16,
+      textAlign: "center",
+    },
+  });
   const renderHeader = () => (
     <View>
       <View style={styles.userInfo}>
@@ -247,113 +358,5 @@ const UserInfo = () => {
     </View>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#1b1b1b",
-  },
-  userInfoText: {
-    fontSize: 16,
-    color: "white",
-  },
-  profileImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    resizeMode: "contain",
-  },
-  profileImageLogo: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-    resizeMode: "contain",
-    textAlign: "center",
-  },
-  imageContainer: {
-    alignItems: "center", // Centrar la imagen dentro del contenedor
-    marginVertical: 10, // Añadir margen vertical para separar la imagen del texto
-  },
-  button: {
-    backgroundColor: "#3498db",
-    padding: 8,
-    margin: 16,
-    borderRadius: 4,
-    alignItems: "center",
-  },
-  userInfo: {
-    paddingVertical: 20,
-    paddingHorizontal: 50,
-    backgroundColor: "#1b1b1b",
-    borderWidth: 5, // Ancho del borde
-    borderColor: "#000", // Color del borde
-    borderRadius: 10,
-  },
-  footerText: {
-    color: "white",
-    textAlign: "center",
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  footerContainer: {
-    alignItems: "center",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    marginTop: 40,
-    marginBottom: 120,
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 10,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  modalNumber: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#3498db",
-  },
-  closeButton: {
-    backgroundColor: "#3498db",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  closeButtonText: {
-    color: "#1b1b1b",
-    fontWeight: "bold",
-  },
-  personContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  personImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
-  personName: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  personDescription: {
-    fontSize: 16,
-    textAlign: "center",
-  },
-});
+
 export default UserInfo;

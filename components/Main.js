@@ -11,7 +11,11 @@ import EventDetailsScreen from "../screens/EventDetailsScreen";
 import EventFormScreen from "../screens/EventFormScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import UserScreen from "../screens/UserScreen";
-import { useNavigation, CommonActions } from "@react-navigation/native";
+import {
+  useNavigation,
+  CommonActions,
+  useTheme,
+} from "@react-navigation/native";
 import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -22,20 +26,28 @@ const MainContent = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-
+  const { colors, fonts } = useTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "flex-start",
+      alignItems: "stretch",
+      backgroundColor: colors.background,
+    },
+  });
   const MainStackNavigator = () => (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#1b1b1b", // Fondo del encabezado
+          backgroundColor: colors.background, // Fondo del encabezado
           height: 100,
           shadowColor: "transparent", // Eliminar sombra en iOS
           elevation: 0, // Eliminar sombra en Android
           borderBottomWidth: 0, // Eliminar borde inferior
         },
-        headerTintColor: "#fff", // Color del texto del encabezado
+        headerTintColor: colors.text, // Color del texto del encabezado
         headerTitleStyle: {
-          fontWeight: "bold", // Estilo del título del encabezado
+          fontFamily: fonts.bold, // Usa la fuente Roboto
         },
         headerTitleAlign: "center",
         headerShown: true,
@@ -48,7 +60,7 @@ const MainContent = () => {
           headerTitle: (props) => <Header {...props} />,
           headerStyle: {
             height: 256,
-            backgroundColor: "#1b1b1b", // Fondo del encabezado
+            backgroundColor: colors.background, // Fondo del encabezado
             shadowColor: "transparent", // Eliminar sombra en iOS
             elevation: 0, // Eliminar sombra en Android
             borderBottomWidth: 0,
@@ -88,18 +100,16 @@ const MainContent = () => {
           screenOptions={{
             headerShown: false,
             headerStyle: {
-              backgroundColor: "#1b1b1b", // Fondo del encabezado
+              backgroundColor: colors.background, // Fondo del encabezado
               shadowColor: "transparent", // Eliminar sombra en iOS
               elevation: 0, // Eliminar sombra en Android
               borderBottomWidth: 0,
             },
-            headerTintColor: "#fff", // Color del texto del encabezado
-            headerTitleStyle: {
-              // fontWeight: "", // Estilo del título del encabezado
-            },
+            headerTintColor: colors.text, // Color del texto del encabezado
+            headerTitleStyle: {},
             headerTitleAlign: "center",
             tabBarStyle: {
-              backgroundColor: "#3498db", // Fondo de la barra de pestañas
+              backgroundColor: colors.text, // Fondo de la barra de pestañas
               height: 60,
               borderRadius: 50,
               marginBottom: 10,
@@ -115,7 +125,7 @@ const MainContent = () => {
               width: "100%",
               height: "100%",
             },
-            tabBarActiveTintColor: "#1b1b1b", // Color de los iconos y texto activos
+            tabBarActiveTintColor: colors.background, // Color de los iconos y texto activos
             tabBarInactiveTintColor: "#888",
             tabBarShowLabel: false,
           }}
@@ -177,12 +187,4 @@ const MainContent = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "stretch",
-    backgroundColor: "#1b1b1b",
-  },
-});
 export default MainContent;

@@ -22,6 +22,7 @@ import {
 } from "../services/googleContacts";
 import { TextInput } from "react-native-gesture-handler";
 import Modal from "react-native-modal";
+import { useTheme } from "@react-navigation/native";
 
 const ContactList = () => {
   const { isAuthenticated, getAccessToken } = useContext(AuthContext);
@@ -35,6 +36,89 @@ const ContactList = () => {
     email: "",
     phone: "",
     photo: "",
+  });
+
+  const { colors, fonts } = useTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 16,
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: 24,
+      // fontWeight: "bold",
+      color: "white",
+      marginBottom: 16,
+    },
+    contactItem: {
+      padding: 16,
+      backgroundColor: "#2c3e50",
+      borderRadius: 8,
+      marginBottom: 8,
+    },
+    contactName: {
+      fontSize: 18,
+      color: "white",
+    },
+    contactEmail: {
+      fontSize: 16,
+      color: "lightgray",
+    },
+    contactPhoto: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      marginRight: 16,
+    },
+    contactPhone: {
+      fontSize: 16,
+      color: "lightgray",
+    },
+    editButton: {
+      backgroundColor: "#3498db",
+      padding: 8,
+      borderRadius: 4,
+      alignItems: "center",
+      marginTop: 10,
+    },
+    addButton: {
+      backgroundColor: "#3498db",
+      padding: 16,
+      borderRadius: 4,
+      alignItems: "center",
+      marginTop: 16,
+    },
+    buttonText: {
+      color: colors.background,
+      fontWeight: "bold",
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      paddingTop: Platform.OS === "ios" ? 20 : 0,
+    },
+    modalContent: {
+      width: "90%",
+      backgroundColor: colors.text,
+      borderRadius: 10,
+      padding: 20,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: "bold",
+      marginBottom: 10,
+    },
+    input: {
+      width: "100%",
+      padding: 8,
+      marginVertical: 8,
+      borderWidth: 1,
+      borderColor: "#ccc",
+      borderRadius: 4,
+    },
   });
 
   useEffect(() => {
@@ -247,87 +331,5 @@ const ContactList = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#1b1b1b",
-  },
-  title: {
-    fontSize: 24,
-    // fontWeight: "bold",
-    color: "white",
-    marginBottom: 16,
-  },
-  contactItem: {
-    padding: 16,
-    backgroundColor: "#2c3e50",
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  contactName: {
-    fontSize: 18,
-    color: "white",
-  },
-  contactEmail: {
-    fontSize: 16,
-    color: "lightgray",
-  },
-  contactPhoto: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 16,
-  },
-  contactPhone: {
-    fontSize: 16,
-    color: "lightgray",
-  },
-  editButton: {
-    backgroundColor: "#3498db",
-    padding: 8,
-    borderRadius: 4,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  addButton: {
-    backgroundColor: "#3498db",
-    padding: 16,
-    borderRadius: 4,
-    alignItems: "center",
-    marginTop: 16,
-  },
-  buttonText: {
-    color: "#1b1b1b",
-    fontWeight: "bold",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    paddingTop: Platform.OS === "ios" ? 20 : 0,
-  },
-  modalContent: {
-    width: "90%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  input: {
-    width: "100%",
-    padding: 8,
-    marginVertical: 8,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
-  },
-});
 
 export default ContactList;

@@ -8,14 +8,59 @@ import {
 } from "react-native";
 import { listUpcomingEvents } from "../services/googleCalendar";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import {
+  useNavigation,
+  useFocusEffect,
+  useTheme,
+} from "@react-navigation/native";
 import { format } from "date-fns"; // Importa la función de formato de date-fns
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 function EventList() {
   const { isAuthenticated, getAccessToken, user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const navigation = useNavigation();
+  const { colors, fonts } = useTheme(); // Accede a los colores y fuentes del tema
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 25, //vatia el tamaño de las card ver luego
+      backgroundColor: colors.background,
+      marginTop: -15,
+    },
+    eventCard: {
+      padding: 10, //16
+      marginVertical: 8,
+      backgroundColor: colors.button,
+      borderRadius: 8,
+      shadowColor: "#000",
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 2,
+      width: "100%",
+    },
+    eventTitle: {
+      fontSize: 24,
+      fontFamily: fonts.bold,
+      color: colors.textMain,
+
+      textAlign: "center", // Centra el texto horizontalmente
+    },
+    eventTextLocation: {
+      textAlign: "center",
+      fontSize: 15,
+      fontWeight: "500",
+    },
+    eventTextContainer: {
+      textAlign: "center", // Centra el contenido horizontalmente
+      fontSize: 15,
+      color: colors.textMain,
+    },
+    errorText: {
+      fontSize: 30,
+      color: "#3498db",
+    },
+  });
   const fetchEvents = async () => {
     try {
       const accessToken = await getAccessToken();
@@ -42,7 +87,7 @@ function EventList() {
   return (
     <View style={styles.container}>
       {events.length === 0 ? (
-        <ActivityIndicator size="large" color="#3498db" />
+        <ActivityIndicator size="large" color={colors.button} />
       ) : (
         events.map((event) => (
           <TouchableOpacity
@@ -72,42 +117,5 @@ function EventList() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 25, //vatia el tamaño de las card ver luego
-    backgroundColor: "#1b1b1b",
-  },
-  eventCard: {
-    padding: 10, //16
-    marginVertical: 8,
-    backgroundColor: "#3498db",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    width: "100%",
-  },
-  eventTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center", // Centra el texto horizontalmente
-  },
-  eventTextLocation: {
-    textAlign: "center",
-    fontSize: 15,
-    fontWeight: "500",
-  },
-  eventTextContainer: {
-    textAlign: "center", // Centra el contenido horizontalmente
-    fontSize: 15,
-  },
-  errorText: {
-    fontSize: 30,
-    color: "#3498db",
-  },
-});
 
 export default EventList;
