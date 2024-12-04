@@ -25,6 +25,7 @@ function Login() {
       margin: 16,
       borderRadius: 4,
       alignItems: "center",
+      marginTop: 150,
     },
   });
 
