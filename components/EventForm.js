@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { listContacts } from "../services/googleContacts";
-import { AuthContext, notificationToken } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { useRoute, useTheme } from "@react-navigation/native";
 import { getEventDetails } from "../services/googleCalendar";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { format } from "date-fns";
 const EventForm = ({ onSubmit }) => {
-  const { isAuthenticated, getAccessToken } = useContext(AuthContext);
+  const { isAuthenticated, token } = useContext(AuthContext);
   const route = useRoute();
   const { event } = route.params || {};
   const id = event?.id;
@@ -99,18 +99,18 @@ const EventForm = ({ onSubmit }) => {
     let isMounted = true;
     const fetchAccessToken = async () => {
       try {
-        const accessToken = await getAccessToken();
+        if (!token) return;
         if (isMounted) {
-          return accessToken;
+          return token;
         }
       } catch (error) {
         console.error("Error getting access token:", error);
       }
     };
 
-    const fetchContacts = async (accessToken) => {
+    const fetchContacts = async (token) => {
       try {
-        const contacts = await listContacts(accessToken);
+        const contacts = await listContacts(token);
         setContacts(contacts);
       } catch (error) {
         console.error(
@@ -137,11 +137,11 @@ const EventForm = ({ onSubmit }) => {
     };
 
     if (isAuthenticated) {
-      fetchAccessToken().then((accessToken) => {
-        if (accessToken) {
-          fetchContacts(accessToken);
+      fetchAccessToken().then((token) => {
+        if (token) {
+          fetchContacts(token);
           if (id) {
-            fetchEvent(accessToken);
+            fetchEvent(token);
           }
         }
       });

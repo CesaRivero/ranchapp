@@ -21,6 +21,7 @@ const AuthContext = createContext();
 function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     const checkIfSignedIn = async () => {
@@ -29,6 +30,13 @@ function AuthProvider({ children }) {
         if (userInfo && userInfo.user) {
           setUser(userInfo.user);
           setIsAuthenticated(true);
+          try {
+            const tokens = await GoogleSignin.getTokens();
+            setToken(tokens.accessToken);
+          } catch (error) {
+            console.error("Error getting access token:", error);
+            throw error;
+          }
           console.log(
             "isAuthenticated en funcion checkIFsingin: dentro del try y dentro del if",
             isAuthenticated
@@ -63,6 +71,13 @@ function AuthProvider({ children }) {
       console.log("userinfo: en funcion singin ", userInfo.data.user);
       console.log("isAuthenticated en funcion singin: ", isAuthenticated);
       setIsAuthenticated(true);
+      try {
+        const tokens = await GoogleSignin.getTokens();
+        setToken(tokens.accessToken);
+      } catch (error) {
+        console.error("Error getting access token:", error);
+        throw error;
+      }
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
@@ -74,25 +89,26 @@ function AuthProvider({ children }) {
       await GoogleSignin.signOut();
       setUser(null);
       setIsAuthenticated(false);
+      setToken(null);
     } catch (error) {
       console.error("Error signing out:", error);
     }
   };
 
   // Función para obtener el token de acceso
-  const getAccessToken = async () => {
-    try {
-      const tokens = await GoogleSignin.getTokens();
-      return tokens.accessToken;
-    } catch (error) {
-      console.error("Error getting access token:", error);
-      throw error;
-    }
-  };
+  // const getAccessToken = async () => {
+  //   try {
+  //     const tokens = await GoogleSignin.getTokens();
+  //     return tokens.accessToken;
+  //   } catch (error) {
+  //     console.error("Error getting access token:", error);
+  //     throw error;
+  //   }
+  // };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, signIn, signOut, getAccessToken }}
+      value={{ isAuthenticated, user, signIn, signOut, token }}
     >
       {children}
     </AuthContext.Provider>

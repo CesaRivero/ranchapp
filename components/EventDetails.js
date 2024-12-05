@@ -23,23 +23,22 @@ import { format } from "date-fns";
 const EventDetails = ({ id }) => {
   const [event, setEvent] = useState(null);
   const navigation = useNavigation();
-  const { isAuthenticated, user, getAccessToken } = useContext(AuthContext);
-
+  const { isAuthenticated, user, token } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   useEffect(() => {
+    if (!token) return;
     const fetchEventDetails = async () => {
       try {
-        const accessToken = await getAccessToken();
-        const eventData = await getEventDetails(id, accessToken);
+        const eventData = await getEventDetails(id, token);
         setEvent(eventData);
       } catch (error) {
         console.error("Error al obtener los detalles del evento:", error);
       }
     };
     fetchEventDetails();
-  }, [id]);
+  }, [id, token]);
 
   useEffect(() => {
     let isRedirecting = false; // Evita múltiples redirecciones.
@@ -86,8 +85,8 @@ const EventDetails = ({ id }) => {
               setLoading(true); // Inicia la carga
 
               try {
-                const accessToken = await getAccessToken();
-                await deleteEvent(event.id, event.summary, accessToken);
+                if (!token) return;
+                await deleteEvent(event.id, event.summary, token);
                 navigation.dispatch(
                   CommonActions.reset({
                     index: 0,

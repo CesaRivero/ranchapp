@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { isLoading } from "expo-font";
 function EventList() {
-  const { isAuthenticated, getAccessToken, user } = useContext(AuthContext);
+  const { isAuthenticated, token, user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const navigation = useNavigation();
   const { colors, fonts } = useTheme();
@@ -65,8 +65,8 @@ function EventList() {
   });
   const fetchEvents = async () => {
     try {
-      const accessToken = await getAccessToken();
-      const result = await listUpcomingEvents(accessToken);
+      if (!token) return;
+      const result = await listUpcomingEvents(token);
       setEvents(result);
       console.log("Eventos:", result);
     } catch (error) {

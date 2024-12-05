@@ -26,7 +26,10 @@ export async function listUpcomingEvents(accessToken) {
     );
     return response.data.items;
   } catch (error) {
-    console.error("Error al listar eventos:", error);
+    console.error(
+      "Error al listar eventos detro de listevent googlecalendar:",
+      error
+    );
     return [];
   }
 }

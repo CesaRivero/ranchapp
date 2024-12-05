@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 
 const EventFormWrapper = ({ isEdit }) => {
   const navigation = useNavigation();
-  const { getAccessToken } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
 
   const handleCreateEvent = async (event) => {
     console.log(
@@ -19,8 +19,8 @@ const EventFormWrapper = ({ isEdit }) => {
     );
 
     try {
-      const accessToken = await getAccessToken();
-      const createdEvent = await createEvent(event, accessToken);
+      if (!token) return;
+      const createdEvent = await createEvent(event, token);
       console.log("Evento creado:", createdEvent);
       navigation.navigate("MainStack", {
         screen: "EventDetailsScreen",
@@ -38,8 +38,8 @@ const EventFormWrapper = ({ isEdit }) => {
     console.log("handleUpdateEvent called with event:", event);
 
     try {
-      const accessToken = await getAccessToken();
-      await updateEvent(event.id, event, accessToken);
+      if (!token) return;
+      await updateEvent(event.id, event, token);
       console.log("Evento actualizado:", event);
       navigation.navigate("MainStack", {
         screen: "EventDetailsScreen",

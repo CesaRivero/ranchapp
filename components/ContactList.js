@@ -27,7 +27,7 @@ import { useTheme } from "@react-navigation/native";
 const ContactList = () => {
   const [isExpanded, setIsExpanded] = useState(false); // Estado para manejar el colapso/despliegue
 
-  const { isAuthenticated, getAccessToken } = useContext(AuthContext);
+  const { isAuthenticated, token } = useContext(AuthContext);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -126,8 +126,8 @@ const ContactList = () => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const accessToken = await getAccessToken();
-        const contacts = await listContacts(accessToken);
+        if (!token) return;
+        const contacts = await listContacts(token);
         console.log(contacts);
         setContacts(contacts);
       } catch (error) {
@@ -144,7 +144,7 @@ const ContactList = () => {
   const handleAddContact = async () => {
     console.log("handleAddContact called with newContact:", newContact);
     try {
-      const accessToken = await getAccessToken();
+      if (!token) return;
       const contact = {
         names: [{ displayName: newContact.name }],
         emailAddresses: [{ value: newContact.email }],
@@ -152,7 +152,7 @@ const ContactList = () => {
         photos: newContact.photo ? [{ url: newContact.photo }] : [], // Maneja la ausencia de foto
       };
       console.log("Contact data being sent:", contact);
-      const addedContact = await addContact(contact, accessToken);
+      const addedContact = await addContact(contact, token);
       console.log("addedContact:", contact);
       setContacts([
         ...contacts,
@@ -186,7 +186,7 @@ const ContactList = () => {
 
   const handleEditContact = async () => {
     try {
-      const accessToken = await getAccessToken();
+      if (!token) return;
       const contact = {
         names: [{ displayName: currentContact.name }],
         emailAddresses: [{ value: currentContact.email }],
@@ -196,7 +196,7 @@ const ContactList = () => {
       const updatedContact = await updateContact(
         currentContact.resourceName,
         contact,
-        accessToken
+        token
       );
       setContacts(
         contacts.map((c) =>

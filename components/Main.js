@@ -25,7 +25,6 @@ const Tab = createBottomTabNavigator();
 const MainContent = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
   const { colors, fonts } = useTheme();
   const styles = StyleSheet.create({
     container: {
