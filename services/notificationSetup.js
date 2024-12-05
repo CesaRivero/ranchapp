@@ -57,21 +57,25 @@ export async function scheduleNotification(event) {
   });
 }
 
-export async function scheduleEditNotification(event) {
+export async function scheduleEditNotification(eventTitle) {
+  console.log("Evento actualizado dentreo de noticonfig:", eventTitle);
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Evento Actualizado",
-      body: `El evento ${event.summary} ha sido actualizado.`,
+      body: `El evento ${eventTitle} ha sido actualizado.`,
     },
     trigger: { seconds: 2 }, // Puedes ajustar el tiempo de la notificación
   });
 }
 
-export async function scheduleDeleteNotification(event) {
+export async function scheduleDeleteNotification(eventTitle) {
+  console.log(
+    `El evento ${eventTitle} ha sido eliminado dentro de confignoti.`
+  );
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Evento Eliminado",
-      body: `El evento ${event.summary} ha sido eliminado.`,
+      body: `El evento ${eventTitle} ha sido eliminado.`,
     },
     trigger: { seconds: 2 }, // Puedes ajustar el tiempo de la notificación
   });

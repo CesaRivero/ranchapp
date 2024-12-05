@@ -14,7 +14,7 @@ import {
   CommonActions,
   useTheme,
 } from "@react-navigation/native";
-import { AuthContext, notificationToken } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { deleteEvent, getEventDetails } from "../services/googleCalendar";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -62,10 +62,6 @@ const EventDetails = ({ id }) => {
     return unsubscribe; // Limpia el listener al desmontar el componente.
   }, [navigation]);
 
-  if (!isAuthenticated) {
-    return <Text>Por favor, inicia sesión para ver tus eventos.</Text>;
-  }
-
   const handleEditClick = () => {
     navigation.navigate("EditEvent", { event });
   };
@@ -85,12 +81,7 @@ const EventDetails = ({ id }) => {
             onPress: async () => {
               try {
                 const accessToken = await getAccessToken();
-                await deleteEvent(
-                  event.id,
-                  accessToken,
-                  event.summary,
-                  notificationToken
-                );
+                await deleteEvent(event.id, event.summary, accessToken);
                 navigation.dispatch(
                   CommonActions.reset({
                     index: 0,

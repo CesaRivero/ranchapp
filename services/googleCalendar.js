@@ -50,10 +50,11 @@ export async function createEvent(event, accessToken) {
     );
     try {
       await scheduleNotification(event);
+      console.log("Evento creado y notificado:", event.summary);
     } catch (notificationError) {
       console.error("Error al programar notificación:", notificationError);
     }
-
+    console.log("titulo del evento creado", event.summary);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -89,11 +90,12 @@ export async function updateEvent(eventId, updatedEvent, accessToken) {
     );
     try {
       await scheduleEditNotification(updatedEvent.summary);
+      console.log("titulo del evento a modificar", updatedEvent.summary);
     } catch (notificationError) {
       console.error("Error al programar notificación:", notificationError);
       console.log("titulo del evento a modificar", updatedEvent.summary);
     }
-
+    console.log("titulo del evento modificado", updatedEvent.summary);
     return response.data;
   } catch (error) {
     console.error("Error al actualizar el evento:", error);
@@ -102,16 +104,13 @@ export async function updateEvent(eventId, updatedEvent, accessToken) {
 }
 
 // Eliminar un evento
-export async function deleteEvent(
-  eventId,
-  eventTitle,
-  accessToken,
-  notificationToken
-) {
+export async function deleteEvent(eventId, eventTitle, accessToken) {
   if (!accessToken) {
     throw new Error("No access token available");
   }
-
+  console.log(
+    `Datos que recibe la funcion de eliminar en googlecalendar: ID: ${eventId}, TITULO: ${eventTitle},  TOKEN: ${accessToken}`
+  );
   try {
     await axios.delete(
       `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`,
@@ -122,18 +121,22 @@ export async function deleteEvent(
       }
     );
     try {
-      await scheduleDeleteNotification(eventTitle, notificationToken);
+      await scheduleDeleteNotification(eventTitle);
+      console.log(
+        "titulo del evento a eliminar luego de ejecutar la notificaicon ",
+        eventTitle
+      );
     } catch (notificationError) {
       console.error(
-        "Error al programar notificación en eliminar:",
+        "Error al programar notificación en eliminar dentro de googlecalendar dentro del catch de notificacion:",
         notificationError
       );
     }
-
+    console.log("Evento eliminado: ", eventTitle);
     return true;
   } catch (notificationError) {
     console.error(
-      "Error al programar notificación en eliminar:",
+      "Error al programar notificación en eliminar deltro del catch orincipal, no ejecuta la peticion pero si elimina:",
       notificationError
     );
   }
