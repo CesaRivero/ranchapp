@@ -404,7 +404,7 @@ const EventForm = ({ onSubmit }) => {
             ) : (
               <Pressable
                 style={styles.button}
-                onpressIn={() => setIsButtonPressed(true)}
+                onPressIn={() => setIsButtonPressed(true)}
                 onPressOut={() => setIsButtonPressed(false)}
                 onPress={handleSubmit}
               >

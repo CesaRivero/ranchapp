@@ -21,12 +21,13 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { format } from "date-fns";
 const EventDetails = ({ id }) => {
-  // const route = useRoute();
-  // const { id } = route.params;
   const [event, setEvent] = useState(null);
   const navigation = useNavigation();
   const { isAuthenticated, user, getAccessToken } = useContext(AuthContext);
-  console.log(event);
+
+  const [loading, setLoading] = useState(false);
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
+
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
@@ -63,7 +64,10 @@ const EventDetails = ({ id }) => {
   }, [navigation]);
 
   const handleEditClick = () => {
+    setLoading(true); // Inicia la carga
+
     navigation.navigate("EditEvent", { event });
+    setLoading(false); // Termina la carga
   };
 
   const handleDelete = async () => {
@@ -79,6 +83,8 @@ const EventDetails = ({ id }) => {
           {
             text: "Eliminar",
             onPress: async () => {
+              setLoading(true); // Inicia la carga
+
               try {
                 const accessToken = await getAccessToken();
                 await deleteEvent(event.id, event.summary, accessToken);
@@ -90,6 +96,8 @@ const EventDetails = ({ id }) => {
                 );
               } catch (error) {
                 console.error("Error al eliminar el evento:", error);
+              } finally {
+                setLoading(false); // Termina la carga
               }
             },
             style: "destructive",
@@ -164,6 +172,7 @@ const EventDetails = ({ id }) => {
       justifyContent: "center",
       width: 140, // Ajusta la anchura del botón
       height: 40,
+      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
     },
     flatListContent: {
       padding: 5,
@@ -299,14 +308,28 @@ const EventDetails = ({ id }) => {
             )}
             {isCreator && (
               <>
-                <View style={styles.buttonContainer}>
-                  <Pressable style={styles.button} onPress={handleEditClick}>
-                    <Feather name="edit-3" size={24} color="black" />
-                  </Pressable>
-                  <Pressable style={styles.button} onPress={handleDelete}>
-                    <FontAwesome6 name="trash-can" size={24} color="black" />
-                  </Pressable>
-                </View>
+                {loading ? (
+                  <ActivityIndicator size="large" color={colors.button} />
+                ) : (
+                  <View style={styles.buttonContainer}>
+                    <Pressable
+                      style={styles.button}
+                      onPressIn={() => setIsButtonPressed(true)}
+                      onPressOut={() => setIsButtonPressed(false)}
+                      onPress={handleEditClick}
+                    >
+                      <Feather name="edit-3" size={24} color="black" />
+                    </Pressable>
+                    <Pressable
+                      style={styles.button}
+                      onpressIn={() => setIsButtonPressed(true)}
+                      onPressOut={() => setIsButtonPressed(false)}
+                      onPress={handleDelete}
+                    >
+                      <FontAwesome6 name="trash-can" size={24} color="black" />
+                    </Pressable>
+                  </View>
+                )}
               </>
             )}
           </>

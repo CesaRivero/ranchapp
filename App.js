@@ -5,15 +5,16 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import { registerForPushNotificationsAsync } from "./services/notificationSetup";
-import { theme } from "./Theme";
-
+import { lightTheme, darkTheme } from "./Theme";
 import {
   useFonts,
   Roboto_400Regular,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
+import { useColorScheme } from "react-native";
 
 const App = () => {
+  const colorScheme = useColorScheme();
   useEffect(() => {
     registerForPushNotificationsAsync();
   }, []);
@@ -21,11 +22,15 @@ const App = () => {
     Roboto_400Regular,
     Roboto_700Bold,
   });
+  console.log("Light Theme: ", lightTheme);
+  console.log("Dark Theme: ", darkTheme);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
         <SafeAreaProvider>
-          <NavigationContainer theme={theme}>
+          <NavigationContainer
+            theme={colorScheme === "dark" ? darkTheme : darkTheme}
+          >
             <MainContent />
           </NavigationContainer>
         </SafeAreaProvider>
