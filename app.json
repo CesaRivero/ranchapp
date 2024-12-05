@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "ranchapp",
+    "name": "Ranchapp",
     "slug": "ranchapp",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/logo-mini.png",
     "userInterfaceStyle": "light",
@@ -21,7 +21,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo-mini.png",
         "backgroundColor": "#1b1b1b"
-      },
+      },"versionCode": 1,
       "package": "com.cesarivero.ranchapp"
     },
     "web": {
