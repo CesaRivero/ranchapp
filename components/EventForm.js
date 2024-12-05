@@ -7,10 +7,11 @@ import {
   FlatList,
   TouchableOpacity,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { listContacts } from "../services/googleContacts";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext, notificationToken } from "../context/AuthContext";
 import { useRoute, useTheme } from "@react-navigation/native";
 import { getEventDetails } from "../services/googleCalendar";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -33,6 +34,9 @@ const EventForm = ({ onSubmit }) => {
   const [isStartDatePickerVisible, setStartDatePickerVisibility] =
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
+  const [loading, setLoading] = useState(false); // Estado de carga
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
+
   const { colors, fonts } = useTheme();
 
   const styles = StyleSheet.create({
@@ -80,6 +84,7 @@ const EventForm = ({ onSubmit }) => {
       margin: 16,
       borderRadius: 4,
       alignItems: "center",
+      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
     },
     addButton: {
       backgroundColor: colors.button,
@@ -184,12 +189,12 @@ const EventForm = ({ onSubmit }) => {
       attendees: participants.map((email) => ({ email })),
       extendedProperties: {
         shared: {
-          numericValue: amount,
+          numericValue: amount || "",
         },
       },
     };
     console.log("handleSubmit called with event dentro de eventform:", event); // Agregar log para depuración
-
+    setLoading(true);
     try {
       await onSubmit(event);
     } catch (error) {
@@ -197,6 +202,8 @@ const EventForm = ({ onSubmit }) => {
         "Error al crear el evento: dentro de try de onsumit en eventform",
         error
       );
+    } finally {
+      setLoading(false); // Termina la carga
     }
   };
 
@@ -392,9 +399,18 @@ const EventForm = ({ onSubmit }) => {
                 </View>
               )}
             />
-            <Pressable style={styles.button} onPress={handleSubmit}>
-              <Text>Guardar</Text>
-            </Pressable>
+            {loading ? (
+              <ActivityIndicator size="large" color={colors.button} />
+            ) : (
+              <Pressable
+                style={styles.button}
+                onpressIn={() => setIsButtonPressed(true)}
+                onPressOut={() => setIsButtonPressed(false)}
+                onPress={handleSubmit}
+              >
+                <Text>Guardar</Text>
+              </Pressable>
+            )}
           </>
         }
       />

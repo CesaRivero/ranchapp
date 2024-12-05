@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { useTheme } from "@react-navigation/native";
 
 function Login() {
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
   const { isAuthenticated, user, signIn } = useContext(AuthContext);
   console.log("isauthenticated en login:", isAuthenticated);
   if (isAuthenticated && user) {
@@ -26,13 +27,20 @@ function Login() {
       borderRadius: 4,
       alignItems: "center",
       marginTop: 150,
+      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
+      transition: "transform 0.1s",
     },
   });
 
   return (
     <View style={styles.container}>
       {isAuthenticated && user ? null : (
-        <Pressable style={styles.button} onPress={() => signIn()}>
+        <Pressable
+          style={styles.button}
+          onPressIn={() => setIsButtonPressed(true)}
+          onPressOut={() => setIsButtonPressed(false)}
+          onPress={() => signIn()}
+        >
           <Text>Inicia sesión</Text>
         </Pressable>
       )}

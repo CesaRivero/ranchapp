@@ -15,11 +15,13 @@ import {
 } from "@react-navigation/native";
 import { format } from "date-fns";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { isLoading } from "expo-font";
 function EventList() {
   const { isAuthenticated, getAccessToken, user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
   const navigation = useNavigation();
   const { colors, fonts } = useTheme();
+  const [loading, setLoading] = useState(true); // Estado de carga
 
   const styles = StyleSheet.create({
     container: {
@@ -58,7 +60,7 @@ function EventList() {
     },
     errorText: {
       fontSize: 30,
-      color: "#3498db",
+      color: colors.text,
     },
   });
   const fetchEvents = async () => {
@@ -69,24 +71,27 @@ function EventList() {
       console.log("Eventos:", result);
     } catch (error) {
       console.error("Error al listar eventos:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useFocusEffect(
     useCallback(() => {
       if (isAuthenticated) {
+        setLoading(true);
         fetchEvents();
       }
     }, [isAuthenticated])
   );
 
-  if (!isAuthenticated) {
-    return <Text>Por favor, inicia sesión para ver tus eventos.</Text>;
+  if (events.length === 0 && isLoading === false) {
+    return <Text style={styles.errorText}>Vaya no hay eventos próximos</Text>;
   }
 
   return (
     <View style={styles.container}>
-      {events.length === 0 ? (
+      {loading ? (
         <ActivityIndicator size="large" color={colors.button} />
       ) : (
         events.map((event) => (

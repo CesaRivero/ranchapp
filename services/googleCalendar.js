@@ -48,11 +48,25 @@ export async function createEvent(event, accessToken) {
         },
       }
     );
-    await scheduleNotification(event);
+    try {
+      await scheduleNotification(event);
+    } catch (notificationError) {
+      console.error("Error al programar notificación:", notificationError);
+    }
 
     return response.data;
   } catch (error) {
-    console.error("Error al crear el evento dentro de googlecalendar:", error);
+    if (error.response) {
+      // La solicitud se realizó y el servidor respondió con un código de estado
+      // que cae fuera del rango de 2xx
+      console.error("Error en la respuesta de la API:", error.response.data);
+    } else if (error.request) {
+      // La solicitud se realizó pero no se recibió respuesta
+      console.error("No se recibió respuesta de la API:", error.request);
+    } else {
+      // Algo sucedió al configurar la solicitud que provocó un error
+      console.error("Error al configurar la solicitud:", error.message);
+    }
     throw error;
   }
 }
@@ -73,7 +87,12 @@ export async function updateEvent(eventId, updatedEvent, accessToken) {
         },
       }
     );
-    await scheduleEditNotification(updatedEvent);
+    try {
+      await scheduleEditNotification(updatedEvent.summary);
+    } catch (notificationError) {
+      console.error("Error al programar notificación:", notificationError);
+      console.log("titulo del evento a modificar", updatedEvent.summary);
+    }
 
     return response.data;
   } catch (error) {
@@ -83,7 +102,12 @@ export async function updateEvent(eventId, updatedEvent, accessToken) {
 }
 
 // Eliminar un evento
-export async function deleteEvent(eventId, accessToken) {
+export async function deleteEvent(
+  eventId,
+  eventTitle,
+  accessToken,
+  notificationToken
+) {
   if (!accessToken) {
     throw new Error("No access token available");
   }
@@ -97,12 +121,21 @@ export async function deleteEvent(eventId, accessToken) {
         },
       }
     );
-    await scheduleDeleteNotification({ summary: eventId });
+    try {
+      await scheduleDeleteNotification(eventTitle, notificationToken);
+    } catch (notificationError) {
+      console.error(
+        "Error al programar notificación en eliminar:",
+        notificationError
+      );
+    }
 
     return true;
-  } catch (error) {
-    console.error("Error al eliminar el evento:", error);
-    return false;
+  } catch (notificationError) {
+    console.error(
+      "Error al programar notificación en eliminar:",
+      notificationError
+    );
   }
 }
 

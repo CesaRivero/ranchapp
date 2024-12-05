@@ -155,7 +155,6 @@ const MainContent = () => {
           />
           <Tab.Screen
             name="CreateEvent"
-            component={(props) => <EventFormScreen {...props} isEdit={false} />}
             options={{
               title: "Crear Evento",
               headerShown: true,
@@ -167,7 +166,9 @@ const MainContent = () => {
                 />
               ),
             }}
-          />
+          >
+            {(props) => <EventFormScreen {...props} isEdit={false} />}
+          </Tab.Screen>
           <Tab.Screen
             name="UserInfo"
             component={UserScreen}

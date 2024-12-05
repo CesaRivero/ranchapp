@@ -14,7 +14,7 @@ import {
   CommonActions,
   useTheme,
 } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext, notificationToken } from "../context/AuthContext";
 import { deleteEvent, getEventDetails } from "../services/googleCalendar";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -28,19 +28,17 @@ const EventDetails = ({ id }) => {
   const { isAuthenticated, user, getAccessToken } = useContext(AuthContext);
   console.log(event);
   useEffect(() => {
-    if (isAuthenticated) {
-      const fetchEventDetails = async () => {
-        try {
-          const accessToken = await getAccessToken();
-          const eventData = await getEventDetails(id, accessToken);
-          setEvent(eventData);
-        } catch (error) {
-          console.error("Error al obtener los detalles del evento:", error);
-        }
-      };
-      fetchEventDetails();
-    }
-  }, [id, isAuthenticated]);
+    const fetchEventDetails = async () => {
+      try {
+        const accessToken = await getAccessToken();
+        const eventData = await getEventDetails(id, accessToken);
+        setEvent(eventData);
+      } catch (error) {
+        console.error("Error al obtener los detalles del evento:", error);
+      }
+    };
+    fetchEventDetails();
+  }, [id]);
 
   useEffect(() => {
     let isRedirecting = false; // Evita múltiples redirecciones.
@@ -87,8 +85,18 @@ const EventDetails = ({ id }) => {
             onPress: async () => {
               try {
                 const accessToken = await getAccessToken();
-                await deleteEvent(id, accessToken);
-                navigation.navigate("MainScreen");
+                await deleteEvent(
+                  event.id,
+                  accessToken,
+                  event.summary,
+                  notificationToken
+                );
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "MainScreen" }],
+                  })
+                );
               } catch (error) {
                 console.error("Error al eliminar el evento:", error);
               }

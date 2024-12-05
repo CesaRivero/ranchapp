@@ -25,6 +25,8 @@ import Modal from "react-native-modal";
 import { useTheme } from "@react-navigation/native";
 
 const ContactList = () => {
+  const [isExpanded, setIsExpanded] = useState(false); // Estado para manejar el colapso/despliegue
+
   const { isAuthenticated, getAccessToken } = useContext(AuthContext);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -126,6 +128,7 @@ const ContactList = () => {
       try {
         const accessToken = await getAccessToken();
         const contacts = await listContacts(accessToken);
+        console.log(contacts);
         setContacts(contacts);
       } catch (error) {
         console.error("Error al obtener los contactos:", error);
@@ -212,20 +215,28 @@ const ContactList = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Contactos</Text>
-      <FlatList
-        data={contacts}
-        keyboardShouldPersistTaps="handled"
-        keyExtractor={(item) => item.resourceName}
-        renderItem={({ item }) => (
-          <View style={styles.contactItem}>
-            {item.photo && (
-              <Image source={{ uri: item.photo }} style={styles.contactPhoto} />
-            )}
-            <Text style={styles.contactName}>{item.name}</Text>
-            <Text style={styles.contactEmail}>{item.email}</Text>
-            <Text style={styles.contactPhone}>{item.phone}</Text>
-            {/* <Pressable
+      <Pressable onPress={() => setIsExpanded(!isExpanded)}>
+        <Text style={styles.title}>
+          {isExpanded ? "Ocultar Contactos" : "Contactos"}
+        </Text>
+      </Pressable>
+      {isExpanded && (
+        <FlatList
+          data={contacts}
+          keyboardShouldPersistTaps="handled"
+          keyExtractor={(item) => item.email}
+          renderItem={({ item }) => (
+            <View style={styles.contactItem}>
+              {item.photo && (
+                <Image
+                  source={{ uri: item.photo }}
+                  style={styles.contactPhoto}
+                />
+              )}
+              <Text style={styles.contactName}>{item.name}</Text>
+              <Text style={styles.contactEmail}>{item.email}</Text>
+              <Text style={styles.contactPhone}>{item.phone}</Text>
+              {/* <Pressable
               style={styles.editButton}
               onPress={() => {
                 setCurrentContact(item);
@@ -234,17 +245,18 @@ const ContactList = () => {
             >
               <Text style={styles.buttonText}>Editar</Text>
             </Pressable> */}
-          </View>
-        )}
-        // ListFooterComponent={
-        // //   <Pressable
-        // //     style={styles.addButton}
-        // //     onPress={() => setModalVisible(true)}
-        // //   >
-        // //     <Text style={styles.buttonText}>Agregar Contacto</Text>
-        // //   </Pressable>
-        // }
-      />
+            </View>
+          )}
+          // ListFooterComponent={
+          // //   <Pressable
+          // //     style={styles.addButton}
+          // //     onPress={() => setModalVisible(true)}
+          // //   >
+          // //     <Text style={styles.buttonText}>Agregar Contacto</Text>
+          // //   </Pressable>
+          // }
+        />
+      )}
       {/* <Modal
         isVisible={modalVisible}
         onBackdropPress={null} // Deshabilitar el cierre al tocar fuera
