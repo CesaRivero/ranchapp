@@ -33,17 +33,15 @@ const EventDetails = ({ id }) => {
     return <ActivityIndicator size="large" color="#3498db" />;
   }
   useEffect(() => {
-    if (token) {
-      const fetchEventDetails = async () => {
-        try {
-          const eventData = await getEventDetails(id, token);
-          setEvent(eventData);
-        } catch (error) {
-          console.error("Error al obtener los detalles del evento:", error);
-        }
-      };
-      fetchEventDetails();
-    }
+    const fetchEventDetails = async () => {
+      try {
+        const eventData = await getEventDetails(id, token);
+        setEvent(eventData);
+      } catch (error) {
+        console.error("Error al obtener los detalles del evento:", error);
+      }
+    };
+    fetchEventDetails();
   }, [id, token]);
 
   useEffect(() => {
@@ -302,7 +300,6 @@ const EventDetails = ({ id }) => {
                       Gasto por persona:
                       {event.extendedProperties?.shared?.numericValue /
                         totalPeople.toFixed(2)}
-                      //redondeo
                     </Text>
                     <Text style={styles.text}>
                       Creado por: {event.creator.email}

@@ -3,6 +3,7 @@ import EventDetails from "../components/EventDetails";
 import { useRoute } from "@react-navigation/native";
 import PullToRefreshWrapper from "../components/PullToRefreshWrapper";
 import { useState } from "react";
+import EventResponse from "../components/EventResponse";
 
 const EventDetailsScreen = () => {
   const route = useRoute();
@@ -17,7 +18,7 @@ const EventDetailsScreen = () => {
     <PullToRefreshWrapper onRefresh={refreshScreen}>
       <View key={refreshKey} style={styles.container}>
         <EventDetails id={id} />
-        //aca hiria el componente de confirmacion de asistencia
+        <EventResponse id={id} />
       </View>
     </PullToRefreshWrapper>
   );
@@ -25,7 +26,7 @@ const EventDetailsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "red", //devolver al negro, esta para probar dimensiones
+    backgroundColor: "#1b1b1b", //devolver al negro, esta para probar dimensiones
   },
 });
 export default EventDetailsScreen;
