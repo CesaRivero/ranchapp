@@ -202,6 +202,7 @@ const EventForm = ({ onSubmit }) => {
         "Error al crear el evento: dentro de try de onsumit en eventform",
         error
       );
+      alert("Error al crear el evento, intente de nuevo mas tarde.");
     } finally {
       setLoading(false); // Termina la carga
     }

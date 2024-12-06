@@ -166,3 +166,40 @@ export async function getEventDetails(eventId, accessToken) {
     throw error;
   }
 }
+
+// Actualizar el estado de respuesta de un participante //falta implmentar
+export async function updateResponseStatus(
+  eventId,
+  responseStatus,
+  userEmail,
+  accessToken
+) {
+  if (!accessToken) {
+    throw new Error("No access token available");
+  }
+
+  try {
+    const response = await axios.patch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`,
+      {
+        attendees: [
+          {
+            email: userEmail, // Email del usuario autenticado
+            responseStatus: responseStatus, // 'accepted', 'declined', 'needsAction'
+          },
+        ],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    console.log(`Estado de respuesta actualizado a: ${responseStatus}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar el estado de respuesta:", error);
+    throw error;
+  }
+}

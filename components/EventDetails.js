@@ -21,23 +21,29 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { format } from "date-fns";
 const EventDetails = ({ id }) => {
+  const { isAuthenticated, user, token } = useContext(AuthContext);
+
   const [event, setEvent] = useState(null);
   const navigation = useNavigation();
-  const { isAuthenticated, user, token } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [isButtonPressed, setIsButtonPressed] = useState(false);
-
+  console.log("TOken", token);
+  if (!token) {
+    //verificacion para no entrar en el error de hooks
+    return <ActivityIndicator size="large" color="#3498db" />;
+  }
   useEffect(() => {
-    if (!token) return;
-    const fetchEventDetails = async () => {
-      try {
-        const eventData = await getEventDetails(id, token);
-        setEvent(eventData);
-      } catch (error) {
-        console.error("Error al obtener los detalles del evento:", error);
-      }
-    };
-    fetchEventDetails();
+    if (token) {
+      const fetchEventDetails = async () => {
+        try {
+          const eventData = await getEventDetails(id, token);
+          setEvent(eventData);
+        } catch (error) {
+          console.error("Error al obtener los detalles del evento:", error);
+        }
+      };
+      fetchEventDetails();
+    }
   }, [id, token]);
 
   useEffect(() => {
@@ -295,8 +301,8 @@ const EventDetails = ({ id }) => {
                     <Text style={styles.text}>
                       Gasto por persona:
                       {event.extendedProperties?.shared?.numericValue /
-                        totalPeople}
-                      $
+                        totalPeople.toFixed(2)}
+                      //redondeo
                     </Text>
                     <Text style={styles.text}>
                       Creado por: {event.creator.email}
@@ -321,7 +327,7 @@ const EventDetails = ({ id }) => {
                     </Pressable>
                     <Pressable
                       style={styles.button}
-                      onpressIn={() => setIsButtonPressed(true)}
+                      onPressIn={() => setIsButtonPressed(true)}
                       onPressOut={() => setIsButtonPressed(false)}
                       onPress={handleDelete}
                     >

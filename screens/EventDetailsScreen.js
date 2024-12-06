@@ -17,6 +17,7 @@ const EventDetailsScreen = () => {
     <PullToRefreshWrapper onRefresh={refreshScreen}>
       <View key={refreshKey} style={styles.container}>
         <EventDetails id={id} />
+        //aca hiria el componente de confirmacion de asistencia
       </View>
     </PullToRefreshWrapper>
   );
@@ -24,7 +25,7 @@ const EventDetailsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1b1b1b",
+    backgroundColor: "red", //devolver al negro, esta para probar dimensiones
   },
 });
 export default EventDetailsScreen;
