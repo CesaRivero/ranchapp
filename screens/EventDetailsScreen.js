@@ -3,7 +3,6 @@ import EventDetails from "../components/EventDetails";
 import { useRoute } from "@react-navigation/native";
 import PullToRefreshWrapper from "../components/PullToRefreshWrapper";
 import { useState } from "react";
-import EventResponse from "../components/EventResponse";
 
 const EventDetailsScreen = () => {
   const route = useRoute();
@@ -18,7 +17,6 @@ const EventDetailsScreen = () => {
     <PullToRefreshWrapper onRefresh={refreshScreen}>
       <View key={refreshKey} style={styles.container}>
         <EventDetails id={id} />
-        <EventResponse id={id} />
       </View>
     </PullToRefreshWrapper>
   );

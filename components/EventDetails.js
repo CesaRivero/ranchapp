@@ -15,23 +15,30 @@ import {
   useTheme,
 } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
-import { deleteEvent, getEventDetails } from "../services/googleCalendar";
+import {
+  deleteEvent,
+  getEventDetails,
+  updateResponseStatus,
+} from "../services/googleCalendar";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { format } from "date-fns";
 const EventDetails = ({ id }) => {
   const { isAuthenticated, user, token } = useContext(AuthContext);
-
-  const [event, setEvent] = useState(null);
-  const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
-  console.log("TOken", token);
   if (!token) {
     //verificacion para no entrar en el error de hooks
     return <ActivityIndicator size="large" color="#3498db" />;
   }
+  const [event, setEvent] = useState(null);
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
+  const [responseStatus, setResponseStatus] = useState(null);
+  const { colors, fonts } = useTheme();
+
+  console.log("TOken", token);
+
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
@@ -42,7 +49,7 @@ const EventDetails = ({ id }) => {
       }
     };
     fetchEventDetails();
-  }, [id, token]);
+  }, [id, token, responseStatus]);
 
   useEffect(() => {
     let isRedirecting = false; // Evita múltiples redirecciones.
@@ -109,6 +116,25 @@ const EventDetails = ({ id }) => {
       );
     }
   };
+  const hadleResponseStatus = async (status) => {
+    const userEmail = user.email;
+    const accessToken = token;
+    try {
+      await updateResponseStatus(id, status, userEmail, accessToken);
+      setResponseStatus(status);
+      const respuestaActual =
+        status === "accepted"
+          ? "aceptado"
+          : status === "declined"
+          ? "rechazado"
+          : "sin respuesta";
+
+      alert(`Evento ${respuestaActual}`);
+    } catch (e) {
+      console.log(e);
+      alert("No se pudo cambiar la respuesta al evento");
+    }
+  };
 
   if (!event) {
     return <ActivityIndicator size="large" color="#3498db" />;
@@ -125,8 +151,7 @@ const EventDetails = ({ id }) => {
     event.attendees?.filter(
       (attendee) => attendee.responseStatus === "accepted"
     ) || [];
-  const totalPeople = confirmedAttendees.length + 1; // Confirmed attendees + organizer
-  const { colors, fonts } = useTheme();
+  const totalPeople = confirmedAttendees.length + 1; // Incluye al creador del evento
 
   const styles = StyleSheet.create({
     container: {
@@ -174,6 +199,17 @@ const EventDetails = ({ id }) => {
       alignItems: "center",
       justifyContent: "center",
       width: 140, // Ajusta la anchura del botón
+      height: 40,
+      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
+    },
+    buttonResponse: {
+      backgroundColor: colors.text,
+      padding: 8,
+      margin: 16,
+      borderRadius: 4,
+      alignItems: "center",
+      justifyContent: "center",
+      width: 80, // Ajusta la anchura del botón
       height: 40,
       transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
     },
@@ -308,7 +344,40 @@ const EventDetails = ({ id }) => {
                 </View>
               </>
             )}
-            {isCreator && (
+            {!isCreator ? (
+              <>
+                <View style={styles.buttonContainer}>
+                  <Pressable
+                    style={styles.buttonResponse}
+                    onPressIn={() => setIsButtonPressed(true)}
+                    onPressOut={() => setIsButtonPressed(false)}
+                    onPress={() => hadleResponseStatus("accepted")}
+                  >
+                    <MaterialIcons name="check" size={24} color="green" />
+                  </Pressable>
+                  <Pressable
+                    style={styles.buttonResponse}
+                    onPressIn={() => setIsButtonPressed(true)}
+                    onPressOut={() => setIsButtonPressed(false)}
+                    onPress={() => hadleResponseStatus("needsAction")}
+                  >
+                    <MaterialIcons
+                      name="pending-actions"
+                      size={24}
+                      color="grey"
+                    />
+                  </Pressable>
+                  <Pressable
+                    style={styles.buttonResponse}
+                    onPressIn={() => setIsButtonPressed(true)}
+                    onPressOut={() => setIsButtonPressed(false)}
+                    onPress={() => hadleResponseStatus("declined")}
+                  >
+                    <MaterialIcons name="cancel" size={24} color="red" />
+                  </Pressable>
+                </View>
+              </>
+            ) : (
               <>
                 {loading ? (
                   <ActivityIndicator size="large" color={colors.button} />
