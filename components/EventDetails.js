@@ -3,12 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
-  Linking,
   FlatList,
   Alert,
   Pressable,
   ActivityIndicator,
   Dimensions,
+  Linking,
 } from "react-native";
 import {
   useNavigation,
@@ -48,7 +48,7 @@ const EventDetails = ({ id }) => {
       try {
         const eventData = await getEventDetails(id, token);
         setEvent(eventData);
-        console.log(eventData);
+        console.log("Evento dentro de eventdetail fetcheents: ", eventData);
       } catch (error) {
         console.error("Error al obtener los detalles del evento:", error);
       }
@@ -145,9 +145,9 @@ const EventDetails = ({ id }) => {
     return <ActivityIndicator size="large" color="#3498db" />;
   }
 
-  // const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  //   event.location || ""
-  // )}`;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    event.location || ""
+  )}`;
   const isCreator = event.creator.email === user.email;
   const hasExpense =
     event.extendedProperties?.shared?.numericValue != null &&
@@ -156,7 +156,7 @@ const EventDetails = ({ id }) => {
     event.attendees?.filter(
       (attendee) => attendee.responseStatus === "accepted"
     ) || [];
-  const totalPeople = confirmedAttendees.length + 1; // Incluye al creador del evento
+  const totalPeople = confirmedAttendees.length; // Incluye al creador del evento
 
   const styles = StyleSheet.create({
     container: {
@@ -196,6 +196,17 @@ const EventDetails = ({ id }) => {
       marginLeft: 20,
     },
     button: {
+      backgroundColor: colors.text,
+      padding: 8,
+      margin: 16,
+      borderRadius: 4,
+      alignItems: "center",
+      justifyContent: "center",
+      width: width * 0.35, // Ajusta la anchura del botón
+      height: 40,
+      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
+    },
+    buttonDelete: {
       backgroundColor: colors.text,
       padding: 8,
       margin: 16,
@@ -285,13 +296,13 @@ const EventDetails = ({ id }) => {
       ...StyleSheet.absoluteFillObject,
     },
   });
-  const lat = parseFloat(event.extendedProperties.shared.lat);
-  const lng = parseFloat(event.extendedProperties.shared.lng);
-  console.log(`datos: Lat: ${lat} Log: ${lng}`);
-  if (isNaN(lat) || isNaN(lng)) {
-    console.error("Latitud o longitud no son números válidos");
-    return alert("Error: Latitud o longitud no son números válidos");
-  }
+  const lat = parseFloat(event?.extendedProperties?.shared?.lat);
+  const lng = parseFloat(event?.extendedProperties?.shared?.lng);
+  console.log(`datos: Ubiacion: ${event.location} Lat: ${lat} Log: ${lng}`);
+  // if (isNaN(lat) || isNaN(lng)) {
+  //   console.error("Latitud o longitud no son números válidos");
+  //   return alert("Error: Latitud o longitud no son números válidos");
+  // }
 
   return (
     <View style={styles.container}>
@@ -304,13 +315,17 @@ const EventDetails = ({ id }) => {
               <FontAwesome6 name="location-dot" size={24} color="black" />
               <Text
                 style={styles.link}
-                // onPress={() => Linking.openURL(mapsUrl)}
+                onPress={() => {
+                  if (!lat || !lng) {
+                    Linking.openURL(mapsUrl);
+                  }
+                }}
               >
                 {event.location}
               </Text>
             </View>
 
-            {event && (
+            {lat && lng && (
               <View style={styles.mapContainer}>
                 <MapView
                   provider={PROVIDER_GOOGLE}
@@ -439,7 +454,7 @@ const EventDetails = ({ id }) => {
                       <Feather name="edit-3" size={24} color="black" />
                     </Pressable>
                     <Pressable
-                      style={styles.button}
+                      style={styles.buttonDelete}
                       onPressIn={() => setIsButtonPressed(true)}
                       onPressOut={() => setIsButtonPressed(false)}
                       onPress={handleDelete}

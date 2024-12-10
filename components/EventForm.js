@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -18,10 +18,12 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { format } from "date-fns";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 const EventForm = ({ onSubmit }) => {
-  const { isAuthenticated, token } = useContext(AuthContext);
+  const { isAuthenticated, token, user } = useContext(AuthContext);
   const route = useRoute();
   const { event } = route.params || {};
   const id = event?.id;
+  const isEdit = !!id; // Determina si estamos en modo de edición
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date());
@@ -44,7 +46,7 @@ const EventForm = ({ onSubmit }) => {
   const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   const { colors, fonts } = useTheme();
-
+  const googlePlacesRef = useRef();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -146,8 +148,22 @@ const EventForm = ({ onSubmit }) => {
       fetchAccessToken().then((token) => {
         if (token) {
           fetchContacts(token);
-          if (id) {
+          if (isEdit) {
             fetchEvent(token);
+          } else {
+            // Limpiar los campos del formulario si no estamos en modo de edición
+            setTitle("");
+            setDescription("");
+            setStartDate(new Date());
+            setEndDate(new Date());
+            setParticipants([]);
+            setLocation({
+              address: "",
+              lat: null,
+              lng: null,
+              placeId: "",
+            });
+            setAmount("");
           }
         }
       });
@@ -194,7 +210,10 @@ const EventForm = ({ onSubmit }) => {
         dateTime: endDate.toISOString(),
         timeZone: "America/Argentina/Buenos_Aires",
       },
-      attendees: participants.map((email) => ({ email })),
+      attendees: [
+        ...participants.map((email) => ({ email })),
+        { email: user.email, responseStatus: "accepted" }, // Agrega el correo electrónico del usuario actual
+      ],
       extendedProperties: {
         shared: {
           numericValue: amount || "",
@@ -208,6 +227,20 @@ const EventForm = ({ onSubmit }) => {
     setLoading(true);
     try {
       await onSubmit(event);
+      // Limpiar los campos del formulario después de enviar el evento
+      setTitle("");
+      setDescription("");
+      setStartDate(new Date());
+      setEndDate(new Date());
+      setParticipants([]);
+      setLocation({
+        address: "",
+        lat: null,
+        lng: null,
+        placeId: "",
+      });
+      setAmount("");
+      googlePlacesRef.current?.clear(); // Restablecer el estado del componente GooglePlacesAutocomplete
     } catch (error) {
       console.error(
         "Error al crear el evento: dentro de try de onsumit en eventform",
@@ -312,11 +345,15 @@ const EventForm = ({ onSubmit }) => {
               value={description}
               onChangeText={setDescription}
               required
+              multiline={true}
+              numberOfLines={4}
+              maxLength={250}
             />
             <Text style={{ color: "white" }}>Ubicación:</Text>
 
             <GooglePlacesAutocomplete
-              placeholder="Search"
+              ref={googlePlacesRef} // Agregar la referencia aquí
+              // placeholder="Search"
               onPress={(data, details = null) => {
                 setLocation({
                   address: data.description,
@@ -336,7 +373,29 @@ const EventForm = ({ onSubmit }) => {
                 language: "es",
               }}
               fetchDetails={true}
-              contentContainerStyle={styles.input}
+              styles={{
+                textInputContainer: {
+                  width: "100%",
+                  padding: 8,
+                  marginVertical: 8,
+                  borderWidth: 1,
+                  borderColor: "#ccc",
+                  borderRadius: 4,
+                  backgroundColor: colors.background,
+                },
+                textInput: {
+                  color: "white",
+                  backgroundColor: colors.background,
+                  height: 30,
+                  borderRadius: 4,
+                  paddingVertical: 8,
+                  paddingHorizontal: 10,
+                  fontSize: 16,
+                },
+                predefinedPlacesDescription: {
+                  color: "#1faadb",
+                },
+              }}
             />
             <Text style={{ color: "white" }}>Fecha y hora de inicio:</Text>
             <View style={styles.dateTimePicker}>
@@ -380,6 +439,8 @@ const EventForm = ({ onSubmit }) => {
               style={styles.input}
               value={amount}
               onChangeText={setAmount}
+              keyboardType="numeric"
+              maxLength={10}
             />
             <Text style={{ color: "white" }}>Participantes:</Text>
             <View style={styles.participantInputContainer}>

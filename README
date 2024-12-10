@@ -10,11 +10,9 @@
 
 - [ ] 🎨 Terminar el CSS.
 - [ ] 📱 Validar notificaciones en dispositivos físicos.
-- [ ] 📝 Validar asistencia dentro de la app.
-- [ ] 🔄 Actualizar la página con el deslizado hacia abajo.
 - [ ] 📊 Agregar analíticas y anuncios.
 - [ ] 🛠️ Corregir la lógica de agregar y editar contactos.
-- [ ] 🛠️ Corregir replica de theme en los archivos.
+      hacer validacion, ya queda eventform
 
 ## 🐞 Problemas Conocidos
 

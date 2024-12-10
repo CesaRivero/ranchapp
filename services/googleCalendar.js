@@ -53,7 +53,7 @@ export async function createEvent(event, accessToken) {
     );
     try {
       await scheduleNotification(event);
-      console.log("Evento creado y notificado:", event.summary);
+      console.log("Evento creado y notificado:", event);
     } catch (notificationError) {
       console.error("Error al programar notificación:", notificationError);
     }
