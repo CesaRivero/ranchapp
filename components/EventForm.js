@@ -16,6 +16,7 @@ import { useRoute, useTheme } from "@react-navigation/native";
 import { getEventDetails } from "../services/googleCalendar";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { format } from "date-fns";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 const EventForm = ({ onSubmit }) => {
   const { isAuthenticated, token } = useContext(AuthContext);
   const route = useRoute();
@@ -27,7 +28,12 @@ const EventForm = ({ onSubmit }) => {
   const [endDate, setEndDate] = useState(new Date());
   const [participants, setParticipants] = useState([]);
   const [contacts, setContacts] = useState([]);
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState({
+    address: "",
+    lat: null,
+    lng: null,
+    placeId: "",
+  });
   const [amount, setAmount] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [value, setValue] = useState("");
@@ -155,6 +161,7 @@ const EventForm = ({ onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validaciones
+    console.log("dentro de submit en eventform");
     if (!title.trim()) {
       alert("Por favor, añade un título.");
       return;
@@ -165,19 +172,20 @@ const EventForm = ({ onSubmit }) => {
       return;
     }
 
-    if (!location.trim()) {
-      alert("Por favor, añade una ubicación.");
-      return;
-    }
+    // if (!location.trim()) {
+    //   alert("Por favor, añade una ubicación.");
+    //   return;
+    // }
     if (participants.length === 0) {
       alert("Por favor, añade al menos un participante.");
       return;
     }
+
     const event = {
       id,
       summary: title,
       description,
-      location: location,
+      location: location.address,
       start: {
         dateTime: startDate.toISOString(),
         timeZone: "America/Argentina/Buenos_Aires",
@@ -190,6 +198,9 @@ const EventForm = ({ onSubmit }) => {
       extendedProperties: {
         shared: {
           numericValue: amount || "",
+          lat: location.lat, // Latitud
+          lng: location.lng, // Longitud
+          placeId: location.placeId, // ID del lugar
         },
       },
     };
@@ -285,6 +296,7 @@ const EventForm = ({ onSubmit }) => {
   return (
     <View style={styles.container}>
       <FlatList
+        keyboardShouldPersistTaps="handled"
         ListHeaderComponent={
           <>
             <Text style={{ color: "white" }}>Título:</Text>
@@ -302,11 +314,29 @@ const EventForm = ({ onSubmit }) => {
               required
             />
             <Text style={{ color: "white" }}>Ubicación:</Text>
-            <TextInput
-              style={styles.input}
-              value={location}
-              onChangeText={setLocation}
-              required
+
+            <GooglePlacesAutocomplete
+              placeholder="Search"
+              onPress={(data, details = null) => {
+                setLocation({
+                  address: data.description,
+                  lat: details.geometry.location.lat,
+                  lng: details.geometry.location.lng,
+                  placeId: data.place_id,
+                });
+                console.log("Ubicación seleccionada:", {
+                  address: data.description,
+                  lat: details.geometry.location.lat,
+                  lng: details.geometry.location.lng,
+                  placeId: data.place_id,
+                });
+              }}
+              query={{
+                key: "AIzaSyCK31OHUTBqJQOOrwfZABdB5EtUcTUDLII",
+                language: "es",
+              }}
+              fetchDetails={true}
+              contentContainerStyle={styles.input}
             />
             <Text style={{ color: "white" }}>Fecha y hora de inicio:</Text>
             <View style={styles.dateTimePicker}>
@@ -356,7 +386,7 @@ const EventForm = ({ onSubmit }) => {
               <TextInput
                 style={styles.input}
                 placeholder="Añadir participante"
-                placeholderTextColor="#ccc" // Cambia el color del placeholder
+                placeholderTextColor="#ccc"
                 value={value}
                 onChangeText={onChange}
               />

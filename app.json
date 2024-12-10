@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ranchapp",
     "slug": "ranchapp",
-    "version": "1.0.1",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/logo-mini.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,11 @@
         "foregroundImage": "./assets/logo-mini.png",
         "backgroundColor": "#1b1b1b"
       },"versionCode": 1,
-      "package": "com.cesarivero.ranchapp"
+      "package": "com.cesarivero.ranchapp", "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCK31OHUTBqJQOOrwfZABdB5EtUcTUDLII"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

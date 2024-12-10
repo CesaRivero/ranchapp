@@ -15,7 +15,7 @@ import {
 } from "@react-navigation/native";
 import { format } from "date-fns";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { isLoading } from "expo-font";
+import Ionicons from "@expo/vector-icons/Ionicons";
 function EventList() {
   const { isAuthenticated, token, user } = useContext(AuthContext);
   const [events, setEvents] = useState([]);
@@ -45,22 +45,42 @@ function EventList() {
       fontSize: 24,
       fontFamily: fonts.bold,
       color: colors.textMain,
-
+      marginBottom: 5,
       textAlign: "center", // Centra el texto horizontalmente
     },
     eventTextLocation: {
       textAlign: "center",
       fontSize: 15,
+      marginBottom: 5,
       fontWeight: "500",
     },
     eventTextContainer: {
       textAlign: "center", // Centra el contenido horizontalmente
       fontSize: 15,
+      marginBottom: 2.5,
       color: colors.textMain,
     },
     errorText: {
-      fontSize: 30,
+      fontSize: 25,
       color: colors.text,
+      textAlign: "center",
+    },
+    erroContainer: {
+      backgroundColor: colors.button,
+      borderRadius: 8,
+      width: "80%",
+      margin: 20,
+      alignItems: "center",
+      justifyContent: "center",
+      height: 80,
+      flexDirection: "row",
+      alignSelf: "center", // Centra el contenedor horizontalmente
+      paddingHorizontal: 10,
+    },
+    iconContainer: {
+      position: "absolute",
+      right: 10,
+      top: 10,
     },
   });
   const fetchEvents = async () => {
@@ -85,8 +105,14 @@ function EventList() {
     }, [isAuthenticated])
   );
 
-  if (events.length === 0 && isLoading === false) {
-    return <Text style={styles.errorText}>Vaya no hay eventos próximos</Text>;
+  if (events.length === 0 && loading === false) {
+    return (
+      <View style={styles.erroContainer}>
+        <Text style={styles.errorText}>
+          Parece que no tienes eventos todavia!
+        </Text>
+      </View>
+    );
   }
 
   return (
@@ -102,8 +128,14 @@ function EventList() {
               navigation.navigate("EventDetailsScreen", { id: event.id })
             }
           >
-            {event.creator.self && (
-              <FontAwesome name="user" size={24} color="black" />
+            {event.creator.self ? (
+              <View style={styles.iconContainer}>
+                <Ionicons name="create" size={24} color="black" />
+              </View>
+            ) : (
+              <View style={styles.iconContainer}>
+                <FontAwesome name="user" size={24} color="black" />
+              </View>
             )}
             <Text style={styles.eventTitle}>{event.summary}</Text>
             <Text style={styles.eventTextContainer}>

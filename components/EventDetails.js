@@ -8,6 +8,7 @@ import {
   Alert,
   Pressable,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import {
   useNavigation,
@@ -24,6 +25,8 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { format } from "date-fns";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+
 const EventDetails = ({ id }) => {
   const { isAuthenticated, user, token } = useContext(AuthContext);
   if (!token) {
@@ -36,6 +39,7 @@ const EventDetails = ({ id }) => {
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const [responseStatus, setResponseStatus] = useState(null);
   const { colors, fonts } = useTheme();
+  const { width, height } = Dimensions.get("window");
 
   console.log("TOken", token);
 
@@ -44,6 +48,7 @@ const EventDetails = ({ id }) => {
       try {
         const eventData = await getEventDetails(id, token);
         setEvent(eventData);
+        console.log(eventData);
       } catch (error) {
         console.error("Error al obtener los detalles del evento:", error);
       }
@@ -140,9 +145,9 @@ const EventDetails = ({ id }) => {
     return <ActivityIndicator size="large" color="#3498db" />;
   }
 
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    event.location || ""
-  )}`;
+  // const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  //   event.location || ""
+  // )}`;
   const isCreator = event.creator.email === user.email;
   const hasExpense =
     event.extendedProperties?.shared?.numericValue != null &&
@@ -169,7 +174,7 @@ const EventDetails = ({ id }) => {
       alignItems: "center", // Alinea los botones verticalmente en el centro
     },
     title: {
-      fontSize: 24,
+      fontSize: width * 0.06,
       fontWeight: "bold",
       marginBottom: 8,
       marginLeft: 20,
@@ -177,17 +182,16 @@ const EventDetails = ({ id }) => {
       // textAlign: "center",
     },
     link: {
-      color: "lightgray",
-      textDecorationLine: "none",
-      fontSize: 20,
-      marginRight: 8,
+      color: "white",
+      // textAlign: "center",
+      fontSize: width * 0.04,
       marginBottom: 8,
-      marginLeft: 20,
+      marginLeft: 10,
     },
     text: {
       color: "white",
       // textAlign: "center",
-      fontSize: 16,
+      fontSize: width * 0.04,
       marginBottom: 8,
       marginLeft: 20,
     },
@@ -198,7 +202,7 @@ const EventDetails = ({ id }) => {
       borderRadius: 4,
       alignItems: "center",
       justifyContent: "center",
-      width: 140, // Ajusta la anchura del botón
+      width: width * 0.35, // Ajusta la anchura del botón
       height: 40,
       transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
     },
@@ -209,7 +213,7 @@ const EventDetails = ({ id }) => {
       borderRadius: 4,
       alignItems: "center",
       justifyContent: "center",
-      width: 80, // Ajusta la anchura del botón
+      width: width * 0.2, // Ajusta la anchura del botón
       height: 40,
       transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
     },
@@ -254,7 +258,7 @@ const EventDetails = ({ id }) => {
     },
     participantsText: {
       color: "white",
-      fontSize: 16,
+      fontSize: width * 0.04,
       marginLeft: 10,
     },
     gastoContainer: {
@@ -269,7 +273,25 @@ const EventDetails = ({ id }) => {
       alignItems: "flex-start",
       marginLeft: -5,
     },
+    mapContainer: {
+      width: "100%",
+      height: height * 0.12,
+      marginTop: 10,
+      marginBottom: 10,
+      borderRadius: 20,
+      overflow: "hidden",
+    },
+    map: {
+      ...StyleSheet.absoluteFillObject,
+    },
   });
+  const lat = parseFloat(event.extendedProperties.shared.lat);
+  const lng = parseFloat(event.extendedProperties.shared.lng);
+  console.log(`datos: Lat: ${lat} Log: ${lng}`);
+  if (isNaN(lat) || isNaN(lng)) {
+    console.error("Latitud o longitud no son números válidos");
+    return alert("Error: Latitud o longitud no son números válidos");
+  }
 
   return (
     <View style={styles.container}>
@@ -282,11 +304,36 @@ const EventDetails = ({ id }) => {
               <FontAwesome6 name="location-dot" size={24} color="black" />
               <Text
                 style={styles.link}
-                onPress={() => Linking.openURL(mapsUrl)}
+                // onPress={() => Linking.openURL(mapsUrl)}
               >
                 {event.location}
               </Text>
             </View>
+
+            {event && (
+              <View style={styles.mapContainer}>
+                <MapView
+                  provider={PROVIDER_GOOGLE}
+                  style={styles.map}
+                  region={{
+                    latitude: lat,
+                    longitude: lng,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                  }}
+
+                  // apiKey="AIzaSyCK31OHUTBqJQOOrwfZABdB5EtUcTUDLII"
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: lat,
+                      longitude: lng,
+                    }}
+                    title="Ubicación seleccionada"
+                  />
+                </MapView>
+              </View>
+            )}
             <View style={styles.dateContainer}>
               <Feather name="calendar" size={24} color="black" />
               <View style={styles.dateTextContainer}>

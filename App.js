@@ -6,6 +6,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import { registerForPushNotificationsAsync } from "./services/notificationSetup";
 import { lightTheme, darkTheme } from "./Theme";
+import "react-native-get-random-values";
+
 import {
   useFonts,
   Roboto_400Regular,
