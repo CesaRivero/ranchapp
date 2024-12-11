@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ranchapp",
     "slug": "ranchapp",
-    "version": "2.0.1",
+    "version": "2.1.1",
     "orientation": "portrait",
     "icon": "./assets/logo-mini.png",
     "userInterfaceStyle": "light",

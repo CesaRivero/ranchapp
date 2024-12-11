@@ -43,8 +43,6 @@ const EventForm = ({ onSubmit }) => {
     useState(false);
   const [isEndDatePickerVisible, setEndDatePickerVisibility] = useState(false);
   const [loading, setLoading] = useState(false); // Estado de carga
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
-
   const { colors, fonts } = useTheme();
   const googlePlacesRef = useRef();
   const styles = StyleSheet.create({
@@ -92,7 +90,6 @@ const EventForm = ({ onSubmit }) => {
       margin: 16,
       borderRadius: 4,
       alignItems: "center",
-      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
     },
     addButton: {
       backgroundColor: colors.button,
@@ -454,7 +451,10 @@ const EventForm = ({ onSubmit }) => {
 
               {suggestions.length === 0 && value.trim() !== "" && (
                 <Pressable
-                  style={styles.addButton}
+                  style={({ pressed }) => [
+                    styles.button,
+                    { transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }] },
+                  ]}
                   onPress={handleAddParticipant}
                 >
                   <Text>Añadir</Text>
@@ -495,9 +495,10 @@ const EventForm = ({ onSubmit }) => {
               <ActivityIndicator size="large" color={colors.button} />
             ) : (
               <Pressable
-                style={styles.button}
-                onPressIn={() => setIsButtonPressed(true)}
-                onPressOut={() => setIsButtonPressed(false)}
+                style={({ pressed }) => [
+                  styles.button,
+                  { transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }] },
+                ]}
                 onPress={handleSubmit}
               >
                 <Text>Guardar</Text>

@@ -36,7 +36,6 @@ const EventDetails = ({ id }) => {
   const [event, setEvent] = useState(null);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
   const [responseStatus, setResponseStatus] = useState(null);
   const { colors, fonts } = useTheme();
   const { width, height } = Dimensions.get("window");
@@ -204,29 +203,6 @@ const EventDetails = ({ id }) => {
       justifyContent: "center",
       width: width * 0.35, // Ajusta la anchura del botón
       height: 40,
-      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
-    },
-    buttonDelete: {
-      backgroundColor: colors.text,
-      padding: 8,
-      margin: 16,
-      borderRadius: 4,
-      alignItems: "center",
-      justifyContent: "center",
-      width: width * 0.35, // Ajusta la anchura del botón
-      height: 40,
-      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
-    },
-    buttonResponse: {
-      backgroundColor: colors.text,
-      padding: 8,
-      margin: 16,
-      borderRadius: 4,
-      alignItems: "center",
-      justifyContent: "center",
-      width: width * 0.2, // Ajusta la anchura del botón
-      height: 40,
-      transform: isButtonPressed ? "scale(0.95)" : "scale(1)",
     },
     flatListContent: {
       padding: 5,
@@ -410,17 +386,23 @@ const EventDetails = ({ id }) => {
               <>
                 <View style={styles.buttonContainer}>
                   <Pressable
-                    style={styles.buttonResponse}
-                    onPressIn={() => setIsButtonPressed(true)}
-                    onPressOut={() => setIsButtonPressed(false)}
+                    style={({ pressed }) => [
+                      styles.button,
+                      {
+                        transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
+                      },
+                    ]}
                     onPress={() => hadleResponseStatus("accepted")}
                   >
                     <MaterialIcons name="check" size={24} color="green" />
                   </Pressable>
                   <Pressable
-                    style={styles.buttonResponse}
-                    onPressIn={() => setIsButtonPressed(true)}
-                    onPressOut={() => setIsButtonPressed(false)}
+                    style={({ pressed }) => [
+                      styles.button,
+                      {
+                        transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
+                      },
+                    ]}
                     onPress={() => hadleResponseStatus("needsAction")}
                   >
                     <MaterialIcons
@@ -430,9 +412,12 @@ const EventDetails = ({ id }) => {
                     />
                   </Pressable>
                   <Pressable
-                    style={styles.buttonResponse}
-                    onPressIn={() => setIsButtonPressed(true)}
-                    onPressOut={() => setIsButtonPressed(false)}
+                    style={({ pressed }) => [
+                      styles.button,
+                      {
+                        transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
+                      },
+                    ]}
                     onPress={() => hadleResponseStatus("declined")}
                   >
                     <MaterialIcons name="cancel" size={24} color="red" />
@@ -446,17 +431,27 @@ const EventDetails = ({ id }) => {
                 ) : (
                   <View style={styles.buttonContainer}>
                     <Pressable
-                      style={styles.button}
-                      onPressIn={() => setIsButtonPressed(true)}
-                      onPressOut={() => setIsButtonPressed(false)}
+                      style={({ pressed }) => [
+                        styles.button,
+                        {
+                          transform: pressed
+                            ? [{ scale: 0.95 }]
+                            : [{ scale: 1 }],
+                        },
+                      ]}
                       onPress={handleEditClick}
                     >
                       <Feather name="edit-3" size={24} color="black" />
                     </Pressable>
                     <Pressable
-                      style={styles.buttonDelete}
-                      onPressIn={() => setIsButtonPressed(true)}
-                      onPressOut={() => setIsButtonPressed(false)}
+                      style={({ pressed }) => [
+                        styles.button,
+                        {
+                          transform: pressed
+                            ? [{ scale: 0.95 }]
+                            : [{ scale: 1 }],
+                        },
+                      ]}
                       onPress={handleDelete}
                     >
                       <FontAwesome6 name="trash-can" size={24} color="black" />

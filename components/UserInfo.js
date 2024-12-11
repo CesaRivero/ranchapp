@@ -36,8 +36,8 @@ const UserInfo = () => {
       resizeMode: "contain",
     },
     profileImageLogo: {
-      width: 50,
-      height: 50,
+      width: 70,
+      height: 70,
       borderRadius: 5,
       resizeMode: "contain",
       textAlign: "center",
@@ -136,7 +136,13 @@ const UserInfo = () => {
         <View style={styles.imageContainer}>
           <Image source={{ uri: user.photo }} style={styles.profileImage} />
         </View>
-        <Pressable style={styles.button} onPress={signOut}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            { transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }] },
+          ]}
+          onPress={signOut}
+        >
           <Text>Cerrar Sesión</Text>
         </Pressable>
       </View>
@@ -148,10 +154,20 @@ const UserInfo = () => {
         source={require("../assets/logo-mini.png")}
         style={styles.profileImageLogo}
       />
-      <Pressable onPress={() => setModalVisible(true)}>
+      <Pressable
+        style={({ pressed }) => [
+          { transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }] },
+        ]}
+        onPress={() => setModalVisible(true)}
+      >
         <Text style={styles.footerText}>Términos y Condiciones</Text>
       </Pressable>
-      <Pressable onPress={() => setAboutUsModalVisible(true)}>
+      <Pressable
+        style={({ pressed }) => [
+          { transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }] },
+        ]}
+        onPress={() => setAboutUsModalVisible(true)}
+      >
         <Text style={styles.footerText}>Sobre Nosotros</Text>
       </Pressable>
     </View>
@@ -277,8 +293,11 @@ const UserInfo = () => {
               </Text>
             </ScrollView>
             <Pressable
-              style={styles.closeButton}
               onPress={() => setModalVisible(false)}
+              style={({ pressed }) => [
+                styles.button,
+                { transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }] },
+              ]}
             >
               <Text style={styles.closeButtonText}>Cerrar</Text>
             </Pressable>
@@ -347,7 +366,10 @@ const UserInfo = () => {
               </View>
             </ScrollView>
             <Pressable
-              style={styles.closeButton}
+              style={({ pressed }) => [
+                styles.button,
+                { transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }] },
+              ]}
               onPress={() => setAboutUsModalVisible(false)}
             >
               <Text style={styles.closeButtonText}>Cerrar</Text>
