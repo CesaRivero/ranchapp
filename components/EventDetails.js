@@ -36,7 +36,7 @@ const EventDetails = ({ id }) => {
   const [event, setEvent] = useState(null);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [responseStatus, setResponseStatus] = useState(null);
+  const [responseStatus, setResponseStatus] = useState("needsAction");
   const { colors, fonts } = useTheme();
   const { width, height } = Dimensions.get("window");
 
@@ -47,6 +47,12 @@ const EventDetails = ({ id }) => {
       try {
         const eventData = await getEventDetails(id, token);
         setEvent(eventData);
+        const currentUserAttendee = eventData.attendees?.find(
+          (attendee) => attendee.email === user.email
+        );
+        if (currentUserAttendee) {
+          setResponseStatus(currentUserAttendee.responseStatus);
+        }
         console.log("Evento dentro de eventdetail fetcheents: ", eventData);
       } catch (error) {
         console.error("Error al obtener los detalles del evento:", error);
@@ -133,10 +139,13 @@ const EventDetails = ({ id }) => {
           ? "rechazado"
           : "sin respuesta";
 
-      alert(`Evento ${respuestaActual}`);
+      Alert.alert("Respuesta al evento", `Evento ${respuestaActual}`);
     } catch (e) {
       console.log(e);
-      alert("No se pudo cambiar la respuesta al evento");
+      Alert.alert(
+        "Respuesta al evento",
+        "No se pudo cambiar la respuesta al evento"
+      );
     }
   };
 
@@ -312,8 +321,6 @@ const EventDetails = ({ id }) => {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                   }}
-
-                  // apiKey="AIzaSyCK31OHUTBqJQOOrwfZABdB5EtUcTUDLII"
                 >
                   <Marker
                     coordinate={{
@@ -372,8 +379,10 @@ const EventDetails = ({ id }) => {
                     </Text>
                     <Text style={styles.text}>
                       Gasto por persona:
-                      {event.extendedProperties?.shared?.numericValue /
-                        totalPeople.toFixed(2)}
+                      {(
+                        event.extendedProperties?.shared?.numericValue /
+                        totalPeople
+                      ).toFixed(2)}
                     </Text>
                     <Text style={styles.text}>
                       Creado por: {event.creator.email}
@@ -385,43 +394,55 @@ const EventDetails = ({ id }) => {
             {!isCreator ? (
               <>
                 <View style={styles.buttonContainer}>
-                  <Pressable
-                    style={({ pressed }) => [
-                      styles.button,
-                      {
-                        transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
-                      },
-                    ]}
-                    onPress={() => hadleResponseStatus("accepted")}
-                  >
-                    <MaterialIcons name="check" size={24} color="green" />
-                  </Pressable>
-                  <Pressable
-                    style={({ pressed }) => [
-                      styles.button,
-                      {
-                        transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
-                      },
-                    ]}
-                    onPress={() => hadleResponseStatus("needsAction")}
-                  >
-                    <MaterialIcons
-                      name="pending-actions"
-                      size={24}
-                      color="grey"
-                    />
-                  </Pressable>
-                  <Pressable
-                    style={({ pressed }) => [
-                      styles.button,
-                      {
-                        transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }],
-                      },
-                    ]}
-                    onPress={() => hadleResponseStatus("declined")}
-                  >
-                    <MaterialIcons name="cancel" size={24} color="red" />
-                  </Pressable>
+                  {responseStatus !== "accepted" && (
+                    <Pressable
+                      style={({ pressed }) => [
+                        styles.button,
+                        {
+                          transform: pressed
+                            ? [{ scale: 0.95 }]
+                            : [{ scale: 1 }],
+                        },
+                      ]}
+                      onPress={() => hadleResponseStatus("accepted")}
+                    >
+                      <MaterialIcons name="check" size={24} color="green" />
+                    </Pressable>
+                  )}
+                  {responseStatus !== "needsAction" && (
+                    <Pressable
+                      style={({ pressed }) => [
+                        styles.button,
+                        {
+                          transform: pressed
+                            ? [{ scale: 0.95 }]
+                            : [{ scale: 1 }],
+                        },
+                      ]}
+                      onPress={() => hadleResponseStatus("needsAction")}
+                    >
+                      <MaterialIcons
+                        name="pending-actions"
+                        size={24}
+                        color="grey"
+                      />
+                    </Pressable>
+                  )}
+                  {responseStatus !== "declined" && (
+                    <Pressable
+                      style={({ pressed }) => [
+                        styles.button,
+                        {
+                          transform: pressed
+                            ? [{ scale: 0.95 }]
+                            : [{ scale: 1 }],
+                        },
+                      ]}
+                      onPress={() => hadleResponseStatus("declined")}
+                    >
+                      <MaterialIcons name="cancel" size={24} color="red" />
+                    </Pressable>
+                  )}
                 </View>
               </>
             ) : (

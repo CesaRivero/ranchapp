@@ -33,6 +33,8 @@ const ContactList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentContact, setCurrentContact] = useState(null);
+  const [contactsLoaded, setContactsLoaded] = useState(false); // Nuevo estado para controlar si los contactos ya han sido cargados
+
   const [newContact, setNewContact] = useState({
     name: "",
     email: "",
@@ -130,6 +132,7 @@ const ContactList = () => {
         const contacts = await listContacts(token);
         console.log(contacts);
         setContacts(contacts);
+        setcontactsLoaded(true);
       } catch (error) {
         console.error("Error al obtener los contactos:", error);
       } finally {
@@ -137,10 +140,10 @@ const ContactList = () => {
       }
     };
 
-    if (isAuthenticated) {
+    if (isAuthenticated && !contactsLoaded) {
       fetchContacts();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, contactsLoaded]);
   const handleAddContact = async () => {
     console.log("handleAddContact called with newContact:", newContact);
     try {

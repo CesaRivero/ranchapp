@@ -193,7 +193,12 @@ const EventForm = ({ onSubmit }) => {
       alert("Por favor, añade al menos un participante.");
       return;
     }
-
+    if (startDate >= endDate) {
+      alert(
+        "La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin."
+      );
+      return;
+    }
     const event = {
       id,
       summary: title,
@@ -214,9 +219,9 @@ const EventForm = ({ onSubmit }) => {
       extendedProperties: {
         shared: {
           numericValue: amount || "",
-          lat: location.lat, // Latitud
-          lng: location.lng, // Longitud
-          placeId: location.placeId, // ID del lugar
+          // lat: location?.lat, // Latitud
+          // lng: location?.lng, // Longitud
+          // placeId: location?.placeId, // ID del lugar
         },
       },
     };
@@ -347,8 +352,19 @@ const EventForm = ({ onSubmit }) => {
               maxLength={250}
             />
             <Text style={{ color: "white" }}>Ubicación:</Text>
+            <TextInput
+              style={styles.input}
+              value={location.address}
+              onChangeText={(text) =>
+                setLocation((prevLocation) => ({
+                  ...prevLocation,
+                  address: text,
+                }))
+              }
+              required
+            />
 
-            <GooglePlacesAutocomplete
+            {/* <GooglePlacesAutocomplete
               ref={googlePlacesRef} // Agregar la referencia aquí
               // placeholder="Search"
               onPress={(data, details = null) => {
@@ -393,7 +409,7 @@ const EventForm = ({ onSubmit }) => {
                   color: "#1faadb",
                 },
               }}
-            />
+            /> */}
             <Text style={{ color: "white" }}>Fecha y hora de inicio:</Text>
             <View style={styles.dateTimePicker}>
               <TouchableOpacity onPress={showStartDatePicker}>

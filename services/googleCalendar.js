@@ -61,6 +61,7 @@ export async function createEvent(event, accessToken) {
     return response.data;
   } catch (error) {
     if (error.response) {
+      console.log("evento que llego al google", event);
       // La solicitud se realizó y el servidor respondió con un código de estado
       // que cae fuera del rango de 2xx
       console.error("Error en la respuesta de la API:", error.response.data);
