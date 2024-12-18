@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
+  Linking,
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import {
@@ -68,6 +69,8 @@ const ContactList = () => {
     contactEmail: {
       fontSize: 16,
       color: "lightgray",
+      textDecorationLine: "underline",
+      marginBottom: 5,
     },
     contactPhoto: {
       width: 50,
@@ -77,7 +80,8 @@ const ContactList = () => {
     },
     contactPhone: {
       fontSize: 16,
-      color: "lightgray",
+      color: "blue",
+      textDecorationLine: "underline",
     },
     editButton: {
       backgroundColor: "#3498db",
@@ -132,7 +136,7 @@ const ContactList = () => {
         const contacts = await listContacts(token);
         console.log(contacts);
         setContacts(contacts);
-        setcontactsLoaded(true);
+        setContactsLoaded(true);
       } catch (error) {
         console.error("Error al obtener los contactos:", error);
       } finally {
@@ -237,8 +241,17 @@ const ContactList = () => {
                 />
               )}
               <Text style={styles.contactName}>{item.name}</Text>
-              <Text style={styles.contactEmail}>{item.email}</Text>
-              <Text style={styles.contactPhone}>{item.phone}</Text>
+              <Pressable
+                onPress={() => Linking.openURL(`mailto:${item.email}`)}
+              >
+                <Text style={styles.contactEmail}>{item.email}</Text>
+              </Pressable>
+              {item.phone !== "Sin teléfono" && (
+                <Pressable onPress={() => Linking.openURL(`tel:${item.phone}`)}>
+                  <Text style={styles.contactPhone}>{item.phone}</Text>
+                </Pressable>
+              )}
+
               {/* <Pressable
               style={styles.editButton}
               onPress={() => {

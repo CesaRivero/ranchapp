@@ -60,6 +60,7 @@ const UserInfo = () => {
       borderWidth: 5, // Ancho del borde
       borderColor: "#000", // Color del borde
       borderRadius: 10,
+      alignItems: "center",
     },
     footerText: {
       color: colors.text,
@@ -132,7 +133,7 @@ const UserInfo = () => {
     <View>
       <View style={styles.userInfo}>
         <Text style={styles.userInfoText}>Bienvenido, {user.givenName}</Text>
-        <Text style={styles.userInfoText}>Email: {user.email}</Text>
+        <Text style={styles.userInfoText}>{user.email}</Text>
         <View style={styles.imageContainer}>
           <Image source={{ uri: user.photo }} style={styles.profileImage} />
         </View>

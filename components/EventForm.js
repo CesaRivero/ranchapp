@@ -129,6 +129,7 @@ const EventForm = ({ onSubmit }) => {
       console.log("id dentro de fetchEvent en eventform:", id);
       try {
         const event = await getEventDetails(id, accessToken);
+        console.log(event.location);
         setTitle(event.summary);
         setDescription(event.description);
         setStartDate(new Date(event.start.dateTime));
@@ -176,12 +177,12 @@ const EventForm = ({ onSubmit }) => {
     // Validaciones
     console.log("dentro de submit en eventform");
     if (!title.trim()) {
-      alert("Por favor, añade un título.");
+      Alert.alert("Advertencia", "Por favor, añade un título.");
       return;
     }
 
     if (!description.trim()) {
-      alert("Por favor, añade una descripción.");
+      Alert.alert("Advertencia", "Por favor, añade una descripción.");
       return;
     }
 
@@ -190,11 +191,12 @@ const EventForm = ({ onSubmit }) => {
     //   return;
     // }
     if (participants.length === 0) {
-      alert("Por favor, añade al menos un participante.");
+      Alert.alert("Advertencia", "Por favor, añade al menos un participante.");
       return;
     }
     if (startDate >= endDate) {
-      alert(
+      Alert.alert(
+        "Advertencia",
         "La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin."
       );
       return;
@@ -248,7 +250,10 @@ const EventForm = ({ onSubmit }) => {
         "Error al crear el evento: dentro de try de onsumit en eventform",
         error
       );
-      alert("Error al crear el evento, intente de nuevo mas tarde.");
+      Alert.alert(
+        "Advertencia",
+        "Error al crear el evento, intente de nuevo mas tarde."
+      );
     } finally {
       setLoading(false); // Termina la carga
     }
@@ -260,7 +265,7 @@ const EventForm = ({ onSubmit }) => {
         setParticipants([...participants, value]);
         setValue("");
       } else {
-        alert("Ingrese un mail valido");
+        Alert.alert("Advertencia", "Ingrese un mail valido");
       }
     }
   };
@@ -276,8 +281,10 @@ const EventForm = ({ onSubmit }) => {
     const inputLength = inputValue.length;
     return inputLength === 0
       ? []
-      : contacts.filter((contact) =>
-          contact.email.toLowerCase().includes(inputValue)
+      : contacts.filter(
+          (contact) =>
+            contact.email.toLowerCase().includes(inputValue) ||
+            contact.name.toLowerCase().includes(inputValue)
         );
   };
 
@@ -354,7 +361,7 @@ const EventForm = ({ onSubmit }) => {
             <Text style={{ color: "white" }}>Ubicación:</Text>
             <TextInput
               style={styles.input}
-              value={location.address}
+              value={location}
               onChangeText={(text) =>
                 setLocation((prevLocation) => ({
                   ...prevLocation,

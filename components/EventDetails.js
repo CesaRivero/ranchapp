@@ -195,6 +195,7 @@ const EventDetails = ({ id }) => {
       fontSize: width * 0.04,
       marginBottom: 8,
       marginLeft: 10,
+      fontStyle: "italic",
     },
     text: {
       color: "white",
@@ -288,7 +289,9 @@ const EventDetails = ({ id }) => {
   //   console.error("Latitud o longitud no son números válidos");
   //   return alert("Error: Latitud o longitud no son números válidos");
   // }
-
+  const currentDate = new Date();
+  const eventDate = new Date(event.start.dateTime);
+  const timeDifference = (eventDate - currentDate) / (1000 * 60 * 60); // Diferencia en horas
   return (
     <View style={styles.container}>
       <FlatList
@@ -391,7 +394,7 @@ const EventDetails = ({ id }) => {
                 </View>
               </>
             )}
-            {!isCreator ? (
+            {!isCreator && timeDifference >= 1 ? (
               <>
                 <View style={styles.buttonContainer}>
                   {responseStatus !== "accepted" && (
@@ -447,37 +450,70 @@ const EventDetails = ({ id }) => {
               </>
             ) : (
               <>
-                {loading ? (
-                  <ActivityIndicator size="large" color={colors.button} />
-                ) : (
-                  <View style={styles.buttonContainer}>
-                    <Pressable
-                      style={({ pressed }) => [
-                        styles.button,
-                        {
-                          transform: pressed
-                            ? [{ scale: 0.95 }]
-                            : [{ scale: 1 }],
-                        },
-                      ]}
-                      onPress={handleEditClick}
-                    >
-                      <Feather name="edit-3" size={24} color="black" />
-                    </Pressable>
-                    <Pressable
-                      style={({ pressed }) => [
-                        styles.button,
-                        {
-                          transform: pressed
-                            ? [{ scale: 0.95 }]
-                            : [{ scale: 1 }],
-                        },
-                      ]}
-                      onPress={handleDelete}
-                    >
-                      <FontAwesome6 name="trash-can" size={24} color="black" />
-                    </Pressable>
-                  </View>
+                {timeDifference < 1 && !isCreator && (
+                  <Pressable
+                    style={{ marginTop: 5 }}
+                    onPress={() => {
+                      Alert.alert(
+                        "Advertencia",
+                        "No se puede modificar la asistencia a menos de una hora del evento, si cambiaste de opinion, comunicate con el creador!!",
+                        [
+                          {
+                            text: "Cerrar",
+                            style: "cancel",
+                          },
+                          {
+                            text: "Contactar",
+                            onPress: () =>
+                              Linking.openURL(`mailto:${event.creator.email}`),
+                          },
+                        ]
+                      );
+                    }}
+                  >
+                    <Feather name="help-circle" size={24} color="black" />
+                  </Pressable>
+                )}
+
+                {isCreator && ( // Mostrar botones de edición y eliminación solo si soy el creador
+                  <>
+                    {loading ? (
+                      <ActivityIndicator size="large" color={colors.button} />
+                    ) : (
+                      <View style={styles.buttonContainer}>
+                        <Pressable
+                          style={({ pressed }) => [
+                            styles.button,
+                            {
+                              transform: pressed
+                                ? [{ scale: 0.95 }]
+                                : [{ scale: 1 }],
+                            },
+                          ]}
+                          onPress={handleEditClick}
+                        >
+                          <Feather name="edit-3" size={24} color="black" />
+                        </Pressable>
+                        <Pressable
+                          style={({ pressed }) => [
+                            styles.button,
+                            {
+                              transform: pressed
+                                ? [{ scale: 0.95 }]
+                                : [{ scale: 1 }],
+                            },
+                          ]}
+                          onPress={handleDelete}
+                        >
+                          <FontAwesome6
+                            name="trash-can"
+                            size={24}
+                            color="black"
+                          />
+                        </Pressable>
+                      </View>
+                    )}
+                  </>
                 )}
               </>
             )}
